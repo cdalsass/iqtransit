@@ -27,11 +27,51 @@ public class SocketIOListener extends Thread implements IOCallback  {
 	private boolean firstConnectionSuccessful = false;
 	protected String host = "";
 	protected int port = 0;
+	private SocketIOEventListener socket_io_event_listener; 
+	private SocketErrorListener socket_on_error_listener; 
+	private SocketDisconnectListener socket_on_disconnect_listener;
+	private SocketConnectListener socket_on_connect_listener;
 
 	public SocketIOListener(String host, int port) {
 		this.host = host;
 		this.port = port;
 	}
+
+	/* INTERFACE 1 */
+	public interface SocketIOEventListener {
+        void onSocketIOEvent(String event,  Object... args);
+    }
+
+    public void setSocketIOEventListener(SocketIOEventListener l) {
+        this.socket_io_event_listener = l;
+    }
+
+    /* INTERFACE 2 */
+	public interface SocketErrorListener {
+        void onSocketError(SocketIOException socketIOException);
+    }
+
+    public void setSocketErrorListener(SocketErrorListener l) {
+        this.socket_on_error_listener = l;
+    }
+
+    /* INTERFACE 3 */
+	public interface SocketDisconnectListener {
+        void onSocketOnDisconnect();
+    }
+
+    public void setSocketOnDisconnectListener(SocketDisconnectListener l) {
+        this.socket_on_disconnect_listener = l;
+    }
+
+    /* INTERFACE 4 */
+	public interface SocketConnectListener {
+        void onSocketConnect();
+    }
+
+    public void setSocketConnectListener(SocketConnectListener l) {
+        this.socket_on_connect_listener = l;
+    }
 
 	/**
 	 * @param args
@@ -60,7 +100,7 @@ public class SocketIOListener extends Thread implements IOCallback  {
 			while (isConnectionEstablished() == false) {
 				
 				try {
-					System.out.println("Create new connection to " + "http://" + host + ":" + new Integer(port).toString() + "/");
+					//System.out.println("Create new connection to " + "http://" + host + ":" + new Integer(port).toString() + "/");
 
 					socket = new SocketIO();
 					socket.connect("http://" + host + ":" + new Integer(port).toString() + "/", this);
@@ -68,53 +108,63 @@ public class SocketIOListener extends Thread implements IOCallback  {
 					Thread.sleep(2000);
 
 					while (isConnectionEstablished()) {
-						System.out.println("now monitoring connection from thread " + Thread.currentThread().getId() + " with status of connection = " + socket.isConnected());
+						//System.out.println("now monitoring connection from thread " + Thread.currentThread().getId() + " with status of connection = " + socket.isConnected());
 						Thread.sleep(2000);
 					}
 
 				} catch (Exception e) {
-						System.out.println("Caught exception while monitoring" + e.toString());
+						//System.out.println("Caught exception while monitoring" + e.toString());
 				}
 			}
 		}	
 	}
 
+	        @Override
+      public void onMessage(JSONObject json, IOAcknowledge ack) {
+
+               /*try {
+                    System.out.println("Server said:" + json.toString(2));
+               } catch (JSONException e) {
+                       e.printStackTrace();
+               }*/
+
+       }
+
+       @Override
+       public void onMessage(String data, IOAcknowledge ack) {
+               //System.out.println("Server said: " + data);
+       }
+
+
 	
 	@Override
-	public void onMessage(JSONObject json, IOAcknowledge ack) {
-		try {
-			System.out.println("Server said:" + json.toString(2));
-		} catch (JSONException e) {
-			e.printStackTrace();
+	public void onError(SocketIOException socketIOException) {
+		setConnectionEstablished(false);
+		if (this.socket_on_error_listener != null) {
+			this.socket_on_error_listener.onSocketError(socketIOException);
 		}
 	}
 
 	@Override
-	public void onMessage(String data, IOAcknowledge ack) {
-		System.out.println("Server said: " + data);
-	}
-
-	@Override
-	public void onError(SocketIOException socketIOException) {
-		System.out.println("an Error occured in thread " + Thread.currentThread().getId());
-		socketIOException.printStackTrace();
-		setConnectionEstablished(false);
-	}
-
-	@Override
 	public void onDisconnect() {
-		System.out.println("Connection terminated.");
 		setConnectionEstablished(false);
+		if (this.socket_on_disconnect_listener != null) {
+			this.socket_on_disconnect_listener.onSocketOnDisconnect();
+		}
 	}
 
 	@Override
 	public void onConnect() {
-		System.out.println("Connection established " +Thread.currentThread().getId());
 		setConnectionEstablished(true);
+		if (this.socket_on_connect_listener != null) {
+			this.socket_on_connect_listener.onSocketConnect();
+		}
 	}
 
 	@Override
 	public void on(String event, IOAcknowledge ack, Object... args) {
-		System.out.println("Server triggered event '" + event + "' from thread " + Thread.currentThread().getId());
+		if (this.socket_io_event_listener != null) {
+			this.socket_io_event_listener.onSocketIOEvent(event, args);
+		}
 	}
 }
