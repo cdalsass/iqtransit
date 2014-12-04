@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+repositories {
+    flatDir {
+        dirs '/Users/cdalsass/dev/tontime-crowd/iqtransit/'
+    }
+}
+
+dependencies {
+    compile files('lib/iqtransit.jar','lib/socketio.jar','lib/junit.jar')
+}
