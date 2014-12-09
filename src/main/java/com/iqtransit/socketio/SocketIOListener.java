@@ -24,13 +24,13 @@ public class SocketIOListener extends Thread implements IOCallback  {
 
 	private final Object lock = new Object();
 	private SocketIO socket;
-	private boolean firstConnectionSuccessful = false;
 	protected String host = "";
 	protected int port = 0;
 	private SocketIOEventListener socket_io_event_listener; 
 	private SocketErrorListener socket_on_error_listener; 
 	private SocketDisconnectListener socket_on_disconnect_listener;
 	private SocketConnectListener socket_on_connect_listener;
+	private boolean isAborted = false;
 
 	public SocketIOListener(String host, int port) {
 		this.host = host;
@@ -48,7 +48,7 @@ public class SocketIOListener extends Thread implements IOCallback  {
 
     /* INTERFACE 2 */
 	public interface SocketErrorListener {
-        void onSocketError(SocketIOException socketIOException);
+        void onSocketError(Exception socketIOException);
     }
 
     public void setSocketErrorListener(SocketErrorListener l) {
@@ -93,11 +93,19 @@ public class SocketIOListener extends Thread implements IOCallback  {
 		}
 	}
 
+	public void abort() {
+		if (socket != null) {
+			socket.disconnect();
+			
+		}
+			
+	}
+
 	public void run() {
 
 		synchronized(this) {
 
-			while (isConnectionEstablished() == false) {
+			while (isConnectionEstablished() == false && isAborted == false) {
 				
 				try {
 					//System.out.println("Create new connection to " + "http://" + host + ":" + new Integer(port).toString() + "/");
@@ -140,6 +148,7 @@ public class SocketIOListener extends Thread implements IOCallback  {
 	@Override
 	public void onError(SocketIOException socketIOException) {
 		setConnectionEstablished(false);
+		socketIOException.printStackTrace();
 		if (this.socket_on_error_listener != null) {
 			this.socket_on_error_listener.onSocketError(socketIOException);
 		}

@@ -14,7 +14,7 @@ public class SocketIOListenerTest {
 
         try {
 
-            sock_listener = new SocketIOListener("localhost", 8011);
+            sock_listener = new SocketIOListener("stage.doodle4.com", 8011);
             sock_listener.start();
 
             sock_listener.setSocketIOEventListener(new SocketIOListener.SocketIOEventListener() {
