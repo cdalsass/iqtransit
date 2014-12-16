@@ -1,16 +1,16 @@
 package com.iqtransit.socket;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 /* modified from http://cs.lmu.edu/~ray/notes/javanetexamples/ */
 
 public class Client implements Runnable {
 
-    BufferedReader in ;
-    PrintWriter out;
+    DataInputStream in ;
+    DataOutputStream out;
     private Socket socket;
     private final Object lock = new Object();
     protected String host = "";
@@ -23,7 +23,7 @@ public class Client implements Runnable {
     }
 
     public void setPaused(boolean isPaused) {
-        synchronized (this) {
+        synchronized (lock) {
             this.isPaused = isPaused;
         }
     }
@@ -92,16 +92,25 @@ public class Client implements Runnable {
                 }  
 
                 try {
-                    // Make connection and initialize streams
-               
-                    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    /* Make connection and initialize streams
+                    http://stackoverflow.com/questions/19383169/bufferedreader-blocking-at-read
+                    Since you are using a String as your entire message. You can use
+                    DataInputStream and DataOutputStream stream decorators to frame the message
+                    for you with readUTF() and writeUTF(String). writeUTF(String) basically frames
+                    the string by writing its length to stream before writing the string.
+                    readUTF() then reads this length and then knows how much data it needs to read
+                    off the stream before returning.                     
+                    */
+
+                    in = new DataInputStream(socket.getInputStream());
 
                     if (in == null) {
                         // server is probably not running. 
                         break;
                     }
 
-                    out = new PrintWriter(socket.getOutputStream(), true);
+                    out = new DataOutputStream(socket.getOutputStream());
 
                 } catch (java.io.IOException e2) {
                     System.out.println("IOException");
@@ -117,12 +126,16 @@ public class Client implements Runnable {
                 while (true) {
                     try {
 
-                        String line = in.readLine();
-                        if (line == null) { // prevents broken connection from printing millions of nulls. 
-                            break;
+                        synchronized(lock) {
+                            // this function blocks until there is something to read. 
+                            String line = in.readUTF();
+                            if (line == null) { // prevents broken connection from printing millions of nulls. 
+                                break;
+                            }
+                            System.out.println(line);
+                            this.on(line);
                         }
-                        System.out.println(line);
-                        this.on(line);
+                        
                        
                     } catch (java.io.IOException e3) {
                         
@@ -135,7 +148,7 @@ public class Client implements Runnable {
                         }
 
                         System.out.println("IOException3");
-                        // i'll hit this when socket is closed externall.
+                        // i'll hit this when socket is externall.
                         break;
                     }
                 }    
@@ -144,6 +157,16 @@ public class Client implements Runnable {
     }
 
 
+    public void sendMessage(String s) {
+       
+        try {
+            out.writeUTF(s + "\r\n");       
+            out.flush();      
+        } catch (IOException e) {
+            System.out.println("just caught IOException");
+        }
+      
+    }
    
     /* 
      http://stackoverflow.com/a/9250117/1620112
@@ -151,13 +174,16 @@ public class Client implements Runnable {
     */
 
     public void close () {
-        try {
-            // not quite sure hy sometimes socket is null. causes crash onPause();
-            if (socket != null) {
-                socket.close();
-            }
-        } catch (IOException e) {
+        synchronized (lock) {
+            /* this could be called from another thread */
+            try {
+                // not quite sure hy sometimes socket is null. causes crash onPause();
+                if (socket != null) {
+                    socket.close();
+                }
+            } catch (IOException e) {
 
+            }
         }
     }
 }

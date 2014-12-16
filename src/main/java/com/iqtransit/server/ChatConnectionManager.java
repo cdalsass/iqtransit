@@ -17,6 +17,16 @@ public class ChatConnectionManager implements ConnectionManager {
         /* add chat worker to end of list of connections */
         connections.add(c);
         c.start();
+
+        c.setMessageListener(new ChatWorker.MessageListener() {
+
+            public void onMessage(String a) {
+                synchronized(this) {
+                    System.out.println("JUST GOT STRING A FROM CLIENT");         
+                }
+            }
+
+        });
        
 
         /*

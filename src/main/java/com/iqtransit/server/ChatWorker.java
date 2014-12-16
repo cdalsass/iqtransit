@@ -1,9 +1,10 @@
 /* original code taken from http://tutorials.jenkov.com/java-multithreaded-servers/multithreaded-server.html */
 
 package com.iqtransit.server;
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
@@ -53,20 +54,22 @@ public class ChatWorker extends Thread implements Worker {
 
         try {
 
-            DataInputStream input  = new DataInputStream(clientSocket.getInputStream());
+            BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
             PrintStream output = new PrintStream(clientSocket.getOutputStream());
             long time = System.currentTimeMillis();
             output.write(("Welcome to the server! " + this.serverText + " - " + time + "").getBytes());
             System.out.println("New client added: " + time);
 
             while (true) {
-                // System.out.println("Trying to read line");
                 // readLine always returns whether there is something available or not. (Will be null if empty)
                 String line = input.readLine();
+                
                 if (line != null && line.startsWith("/quit")) {
                     break;
                 } else if (line != null && line != "") {
                     System.out.println(line + " received from client.");
+                    messageListener.onMessage(line);
                 }
 
                 // this thing goes wild if a print statement is there. therefore, cool down CPU a bit. 
@@ -78,7 +81,7 @@ public class ChatWorker extends Thread implements Worker {
             }
 
             System.out.println("Client disconnected.");
-            output.println("*** Bye ***");
+            System.out.println("*** Bye ***");
 
             input.close();
             output.close();

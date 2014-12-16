@@ -25,7 +25,7 @@ public class HttpWorker implements Worker, Runnable{
             InputStream input  = clientSocket.getInputStream();
             OutputStream output = clientSocket.getOutputStream();
             long time = System.currentTimeMillis();
-            output.write(("HTTP/1.1 201 OK\n\nWorkerRunnable: " + this.serverText + " - " + time + "").getBytes());
+            output.write(("HTTP/1.1 200 OK\n\nWorkerRunnable: " + this.serverText + " - " + time + "").getBytes());
             output.close();
             input.close();
             System.out.println("Request processed: " + time);
