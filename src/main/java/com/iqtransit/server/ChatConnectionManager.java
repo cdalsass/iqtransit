@@ -21,9 +21,11 @@ public class ChatConnectionManager implements ConnectionManager {
         c.setMessageListener(new ChatWorker.MessageListener() {
 
             public void onMessage(String a) {
-                synchronized(this) {
-                    System.out.println("JUST GOT STRING A FROM CLIENT");         
-                }
+
+              for (int i = 0; i < connections.size(); i++) {
+                ChatWorker element = connections.get(i);
+                element.sendMessage(a + "\n");
+              }   
             }
 
         });

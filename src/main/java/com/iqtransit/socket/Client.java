@@ -126,25 +126,27 @@ public class Client implements Runnable {
                 while (true) {
                     try {
 
-                        synchronized(lock) {
                             // this function blocks until there is something to read. 
-                            String line = in.readUTF();
+                           
+                            String line = in.readLine();
+                          
                             if (line == null) { // prevents broken connection from printing millions of nulls. 
                                 break;
                             }
-                            System.out.println(line);
+                            
                             this.on(line);
-                        }
-                        
-                       
+
                     } catch (java.io.IOException e3) {
                         
                         System.out.println("wait 10 secs");
                         
                         try {
                             Thread.sleep(10000);    
+
                         } catch (java.lang.InterruptedException e ) {
+                            
                             System.out.println("InterruptedException 4 raised");
+                        
                         }
 
                         System.out.println("IOException3");
@@ -160,7 +162,7 @@ public class Client implements Runnable {
     public void sendMessage(String s) {
        
         try {
-            out.writeUTF(s + "\r\n");       
+            out.writeUTF(s);       
             out.flush();      
         } catch (IOException e) {
             System.out.println("just caught IOException");

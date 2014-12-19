@@ -1,8 +1,8 @@
 /* original code taken from http://tutorials.jenkov.com/java-multithreaded-servers/multithreaded-server.html */
 
 package com.iqtransit.server;
-import java.io.BufferedReader;
-import java.io.PrintStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -21,6 +21,7 @@ public class ChatWorker extends Thread implements Worker {
     protected String serverText   = null;
     protected MessageListener messageListener = null;
     protected DestroyListener destroyListener = null;
+    protected DataOutputStream output;
 
     public ChatWorker(Socket clientSocket, String serverText) {
         this.clientSocket = clientSocket;
@@ -46,24 +47,30 @@ public class ChatWorker extends Thread implements Worker {
     }
 
     // add a message to the message queue. 
-    public void sendMessage(String message) {
+    public void sendMessage(String s) {
+        try {
+            System.out.println("sending bytes to output");
+            output.writeUTF(s);
 
+        } catch (java.io.IOException e) {
+            System.out.println("raised IOException");
+        }
     }
 
     public void run() {
 
         try {
 
-            BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            DataInputStream input = new DataInputStream(clientSocket.getInputStream());
 
-            PrintStream output = new PrintStream(clientSocket.getOutputStream());
+            output = new DataOutputStream(clientSocket.getOutputStream());
             long time = System.currentTimeMillis();
-            output.write(("Welcome to the server! " + this.serverText + " - " + time + "").getBytes());
+            output.writeUTF(("Welcome to the server! " + this.serverText + " - " + time + ""));
             System.out.println("New client added: " + time);
 
             while (true) {
                 // readLine always returns whether there is something available or not. (Will be null if empty)
-                String line = input.readLine();
+                String line = input.readUTF();
                 
                 if (line != null && line.startsWith("/quit")) {
                     break;
