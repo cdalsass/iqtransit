@@ -4,14 +4,14 @@ java -cp .:build/libs/iqtransit.jar com.iqtransit.server.CrowdServerRunner
 */
 package com.iqtransit.server;
 import com.iqtransit.server.MultiThreadedServer;
-import com.iqtransit.server.LocatableItemList;
+import com.iqtransit.server.LocatableList;
 import java.util.Date;
 
 public class CrowdServerRunner {
 
     public static void main(String[] args) {
 
-        LocatableItemList passengerlist = new LocatableItemList();
+        LocatableList passengerlist = new LocatableList();
 
         System.out.println("open connection to port 8011 in thread " + Thread.currentThread().getId());
         MultiThreadedServer server2 = new MultiThreadedServer(8011, new ChatConnectionManager());
