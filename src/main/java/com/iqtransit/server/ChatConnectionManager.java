@@ -24,26 +24,12 @@ public class ChatConnectionManager implements ConnectionManager {
 
               for (int i = 0; i < connections.size(); i++) {
                 ChatWorker element = connections.get(i);
-                element.sendMessage(a + "\n");
+                System.out.println("sending message to client #" + i + " message: " + a);
+                element.sendMessage(a);
               }   
             }
 
         });
        
-
-        /*
-         * Clean up. Set the current thread variable to null so that a new client
-         * could be accepted by the server.
-         */
-        /* synchronized (this) {
-                for (int i = 0; i < maxClientsCount; i++) {
-                  if (threads[i] == this) {
-                    threads[i] = null;
-                  }
-                }
-            } */
-        /*
-         * Close the output stream, close the input stream, close the socket.
-         */
     }
 }

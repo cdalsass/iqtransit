@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-
+import java.util.ArrayList;
 /* modified from http://cs.lmu.edu/~ray/notes/javanetexamples/ */
 
 public class Client implements Runnable {
 
-    DataInputStream in ;
+    DataInputStream in;
     DataOutputStream out;
     private Socket socket;
     private final Object lock = new Object();
@@ -17,6 +17,7 @@ public class Client implements Runnable {
     protected int port = 0;
     private ClientEventListener clientEventListener;
     boolean isPaused = false;
+    ArrayList<String> unsentMessages;
 
     public boolean isPaused() {
         return this.isPaused;
@@ -44,6 +45,7 @@ public class Client implements Runnable {
     }
 
     public Client(String host, int port) {
+        this.unsentMessages = new ArrayList<String>();
         this.host = host;
         this.port = port;
     }
@@ -55,20 +57,20 @@ public class Client implements Runnable {
             if (isPaused == true) {
 
                 try {
-                        Thread.sleep(1000);
-                    } catch (java.lang.InterruptedException e1) {
-                        System.out.println("InterruptedException e1");
-                    }
+                    Thread.sleep(1000);
+                } catch (java.lang.InterruptedException e1) {
+                    System.out.println("InterruptedException e1");
+                }
 
             } else {
 
                 try {
-                    
+
                     socket = new Socket(host, port);
                     System.out.println("create new socket");
 
                 } catch (java.net.UnknownHostException e2) {
-                    
+
                     System.out.println("UnknownHostException for host " + host + " and port " + port);
 
                     try {
@@ -81,15 +83,15 @@ public class Client implements Runnable {
 
                 } catch (IOException e) {
                     System.out.println("IOException. Wait a few seconds and try again.");
-                    
+
                     try {
-                        Thread.sleep(2000);    
+                        Thread.sleep(2000);
                     } catch (java.lang.InterruptedException e4) {
                         System.out.println("InterruptedException raised");
                     }
                     // try again in a few seconds;
                     continue;
-                }  
+                }
 
                 try {
 
@@ -100,13 +102,13 @@ public class Client implements Runnable {
                     for you with readUTF() and writeUTF(String). writeUTF(String) basically frames
                     the string by writing its length to stream before writing the string.
                     readUTF() then reads this length and then knows how much data it needs to read
-                    off the stream before returning.                     
+                    off the stream before returning.
                     */
 
                     in = new DataInputStream(socket.getInputStream());
 
                     if (in == null) {
-                        // server is probably not running. 
+                        // server is probably not running.
                         break;
                     }
 
@@ -116,9 +118,9 @@ public class Client implements Runnable {
                     System.out.println("IOException");
                     try {
                         System.out.println("wait 10 secs");
-                        Thread.sleep(10000);    
+                        Thread.sleep(10000);
                     } catch (java.lang.InterruptedException e ) {
-                         System.out.println("InterruptedException raised");
+                        System.out.println("InterruptedException raised");
                     }
                 }
 
@@ -126,51 +128,69 @@ public class Client implements Runnable {
                 while (true) {
                     try {
 
-                            // this function blocks until there is something to read. 
-                           
-                            String line = in.readLine();
-                          
-                            if (line == null) { // prevents broken connection from printing millions of nulls. 
-                                break;
+                        // this function blocks until there is something to read.
+
+                        synchronized (this) {
+                            String s; 
+                            while (unsentMessages.isEmpty() == false) {
+                                
+                                s = unsentMessages.remove(0);
+                                try {
+                                    System.out.println("just wrote line " + s + "\n");
+                                    System.out.flush();
+                                    out.writeUTF(s);
+                                    out.flush();
+                                } catch (IOException e) {
+                                    System.out.println("just caught IOException");
+                                }
+
                             }
-                            
-                            this.on(line);
+
+
+                        }
+
+                        String line = in.readLine();
+
+                        if (line == null) { // prevents broken connection from printing millions of nulls.
+                            break;
+                        }
+
+                        this.on(line);
+
+                        
 
                     } catch (java.io.IOException e3) {
-                        
+
                         System.out.println("wait 10 secs");
-                        
+
                         try {
-                            Thread.sleep(10000);    
+                            Thread.sleep(10000);
 
                         } catch (java.lang.InterruptedException e ) {
-                            
+
                             System.out.println("InterruptedException 4 raised");
-                        
+
                         }
 
                         System.out.println("IOException3");
                         // i'll hit this when socket is externall.
                         break;
                     }
-                }    
-            }       
+                }
+            }
         }
     }
 
 
     public void sendMessage(String s) {
-       
-        try {
-            out.writeUTF(s);       
-            out.flush();      
-        } catch (IOException e) {
-            System.out.println("just caught IOException");
+
+        synchronized (this) {
+            unsentMessages.add(s);
         }
-      
+
     }
-   
-    /* 
+
+    /*
      http://stackoverflow.com/a/9250117/1620112
      You can close the socket from the main thread. This will break the call to accept and cause it to throw an IOException. You can then exit the accept thread's run method from the catch of the IOException. -Tudor.
     */

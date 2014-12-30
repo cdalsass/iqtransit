@@ -16,7 +16,7 @@ import java.net.Socket;
  */
 
 public class ChatWorker extends Thread implements Worker {
-
+    public boolean DEBUG = false; 
     protected Socket clientSocket = null;
     protected String serverText   = null;
     protected MessageListener messageListener = null;
@@ -49,7 +49,7 @@ public class ChatWorker extends Thread implements Worker {
     // add a message to the message queue. 
     public void sendMessage(String s) {
         try {
-            System.out.println("sending bytes to output");
+            if (DEBUG) System.out.println("sending bytes to output" + s);
             output.writeUTF(s);
 
         } catch (java.io.IOException e) {
@@ -66,7 +66,7 @@ public class ChatWorker extends Thread implements Worker {
             output = new DataOutputStream(clientSocket.getOutputStream());
             long time = System.currentTimeMillis();
             output.writeUTF(("Welcome to the server! " + this.serverText + " - " + time + ""));
-            System.out.println("New client added: " + time);
+            if (DEBUG) System.out.println("New client added: " + time);
 
             while (true) {
                 // readLine always returns whether there is something available or not. (Will be null if empty)
@@ -75,7 +75,8 @@ public class ChatWorker extends Thread implements Worker {
                 if (line != null && line.startsWith("/quit")) {
                     break;
                 } else if (line != null && line != "") {
-                    System.out.println(line + " received from client.");
+                    if (DEBUG) System.out.println("SERVER: line " + line + " received from client.");
+                    if (DEBUG) System.out.flush();
                     messageListener.onMessage(line);
                 }
 
@@ -87,8 +88,8 @@ public class ChatWorker extends Thread implements Worker {
                 }
             }
 
-            System.out.println("Client disconnected.");
-            System.out.println("*** Bye ***");
+            if (DEBUG) System.out.println("Client disconnected.");
+            if (DEBUG) System.out.println("*** Bye ***");
 
             input.close();
             output.close();
