@@ -8,4 +8,5 @@ repositories {
 
 dependencies {
     compile files('lib/iqtransit.jar','lib/socketio.jar','lib/junit.jar')
+    testCompile files('lib/junit.jar','lib/junit.jar','lib/hamcrest-core-1.3.jar')
 }
