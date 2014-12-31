@@ -149,7 +149,7 @@ public class Client implements Runnable {
 
                         }
 
-                        String line = in.readLine();
+                        String line = in.readUTF();
 
                         if (line == null) { // prevents broken connection from printing millions of nulls.
                             break;

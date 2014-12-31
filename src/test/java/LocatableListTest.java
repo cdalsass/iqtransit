@@ -18,6 +18,7 @@ public class LocatableListTest {
 
     @Test
     public void testAddingAndDeduping() {
+
     	LocatableList a = new LocatableList();
     	String id = "user1000";
         double lat = 72.00;
@@ -29,14 +30,24 @@ public class LocatableListTest {
         org.junit.Assert.assertEquals("should be 2 items in list after 2 unique ids used", 2, a.size());
         a.locationUpdate(id, lat, longitude);
         org.junit.Assert.assertEquals("based on id number, dups should be eliminated", 2, a.size());
+        a.locationUpdate("different user2", 73.00, longitude);
+
     }
 
     @Test
     public void testLocationFunctions() {
+
         Locatable from = new Locatable("from",42.520536, -71.507640);
         Locatable to = new Locatable("to",42.501555, -71.476741);
         org.junit.Assert.assertEquals("distance should be about 2 miles", true, from.distanceTo(to) > 1.5 &&  from.distanceTo(to) < 2.5);
+
     }
 
-   
+    @Test
+    public void testAggregation() {
+
+        
+
+    }
+
 }

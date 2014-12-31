@@ -51,6 +51,7 @@ public class ChatWorker extends Thread implements Worker {
         try {
             if (DEBUG) System.out.println("sending bytes to output" + s);
             output.writeUTF(s);
+            output.flush();
 
         } catch (java.io.IOException e) {
             System.out.println("raised IOException");
@@ -66,6 +67,7 @@ public class ChatWorker extends Thread implements Worker {
             output = new DataOutputStream(clientSocket.getOutputStream());
             long time = System.currentTimeMillis();
             output.writeUTF(("Welcome to the server! " + this.serverText + " - " + time + ""));
+            output.flush();
             if (DEBUG) System.out.println("New client added: " + time);
 
             while (true) {

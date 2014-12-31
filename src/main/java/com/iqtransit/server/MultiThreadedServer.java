@@ -45,7 +45,7 @@ public class MultiThreadedServer implements Runnable{
             }
 
             System.out.println("called handle connection");
-            connectionManager.HandleConnection(clientSocket);
+            connectionManager.handleConnection(clientSocket);
             
         }
         System.out.println("Server Stopped.") ;

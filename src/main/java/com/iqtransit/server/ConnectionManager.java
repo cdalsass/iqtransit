@@ -3,6 +3,7 @@ import java.net.Socket;
 
 public interface ConnectionManager {
 
-	public void HandleConnection(Socket sock);
+	public void handleConnection(Socket sock);
+	public void sendMessage(String message);
 
 }
