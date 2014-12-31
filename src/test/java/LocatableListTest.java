@@ -28,9 +28,10 @@ public class LocatableListTest {
         org.junit.Assert.assertEquals("size() should be 1 item in last after 1 unique id used",1, a.size());
         a.locationUpdate("different user", 73.00, longitude);
         org.junit.Assert.assertEquals("should be 2 items in list after 2 unique ids used", 2, a.size());
-        a.locationUpdate(id, lat, longitude);
+        a.locationUpdate(id, 71.00, longitude);
         org.junit.Assert.assertEquals("based on id number, dups should be eliminated", 2, a.size());
         a.locationUpdate("different user2", 73.00, longitude);
+        org.junit.Assert.assertEquals("make sure update took place",a.get(id).latitude, 71.00, .001);
 
     }
 
@@ -46,7 +47,7 @@ public class LocatableListTest {
     @Test
     public void testAggregation() {
 
-        
+
 
     }
 

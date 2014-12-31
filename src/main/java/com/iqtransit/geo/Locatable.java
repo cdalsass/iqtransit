@@ -1,9 +1,9 @@
 package com.iqtransit.geo;
 
 public class Locatable {
-	private double latitude;
-	private double longitude;
-	private String id;
+	public double latitude;
+	public double longitude;
+	public String id;
 
 	public Locatable(String id, double latitute, double longitude) {
 		this.latitude = latitute;
@@ -11,18 +11,7 @@ public class Locatable {
 		this.id = id;
 	}
 
-	public double getLatitute() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public String getId() {
-		return id;
-	}
-
+	
 	public String toString() {
         return id + " (" + latitude + ", " + longitude + ")";
     }

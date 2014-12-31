@@ -2,19 +2,17 @@ package com.iqtransit.server;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import com.iqtransit.geo.Locatable;
 
 /* the purpose of this class is to manage location updates, eliminating dupes, clearing out old entries */
 
 public class LocatableList {
 
-	private List<Locatable> locations;
-	private Dictionary<String,Integer> indexbyid;
+	private ConcurrentHashMap<String,Locatable> locations;
 
 	public LocatableList() {
-		locations = new ArrayList<Locatable>();
-		indexbyid = new Hashtable();
+		locations = new ConcurrentHashMap();
 	}
 
 	public int size() {
@@ -22,19 +20,30 @@ public class LocatableList {
 	}
 
 	public void add(Locatable a) {
-		indexbyid.put(a.getId(), locations.size());
-		locations.add(a);
+		locations.put(a.id, a);
+	}
+
+	public Locatable get(String id) {
+		return locations.get(id);
 	}
 
 	public void update(Locatable newlocation) {
-
+		Locatable existing = locations.get(newlocation.id);
+		if (existing != null) {
+			if (existing.latitude != newlocation.latitude || existing.longitude != newlocation.longitude ) {
+				// something changed. update 
+				existing.latitude = newlocation.latitude;
+				existing.longitude = newlocation.longitude;
+				// then notify any listeners. 
+			}
+		}
 	}
 
-	public void locationUpdate(String id, double latitute, double longitude) {
-		Locatable a = new Locatable(id, latitute, longitude);
+	public void locationUpdate(String id, double latitude, double longitude) {
+		Locatable a = new Locatable(id, latitude, longitude);
 		// if locatable is present based on dictionary, add, otherwise update.
 
-		if (indexbyid.get(id) != null) { // if found, update. Otherwise, throw exception. 
+		if (locations.get(id) != null) { // if found, update. Otherwise, throw exception. 
 			this.update(a);
 		} else {
 			this.add(a);	
