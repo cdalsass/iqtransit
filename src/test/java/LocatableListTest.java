@@ -3,6 +3,8 @@
 
 import static org.junit.Assert.assertEquals;
 import com.iqtransit.server.LocatableList;
+import com.iqtransit.geo.LocatableFormatter;
+import com.iqtransit.geo.LocatableJSONFormatter;
 import com.iqtransit.geo.Locatable;
 import org.junit.Test;
 import org.junit.Ignore;
@@ -45,10 +47,19 @@ public class LocatableListTest {
     }
 
     @Test
-    public void testAggregation() {
+    public void testDisplay() {
 
+        LocatableList a = new LocatableList();
+        String id = "user1000";
+        double lat = 72.00;
+        double longitude = 72.00;
+        a.locationUpdate(id, lat, longitude);
 
-
+        LocatableFormatter lf  = new LocatableJSONFormatter(); /* formats a single Locatable */
+        Locatable loc = lf.parse(" { id: \"aaa\",latitude: 9.9999, longitude: 72.837 } ");
+        String json_again = lf.format(loc);
+        org.junit.Assert.assertEquals("location id matches","aaa",loc.id);
+        org.junit.Assert.assertEquals("location id contains json",true,json_again.indexOf("{") == 0 );
     }
 
 }

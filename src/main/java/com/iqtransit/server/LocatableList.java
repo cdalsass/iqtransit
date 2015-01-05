@@ -43,7 +43,7 @@ public class LocatableList {
 		Locatable a = new Locatable(id, latitude, longitude);
 		// if locatable is present based on dictionary, add, otherwise update.
 
-		if (locations.get(id) != null) { // if found, update. Otherwise, throw exception. 
+		if (locations.get(id) != null) { // if found, update. 
 			this.update(a);
 		} else {
 			this.add(a);	
@@ -52,6 +52,10 @@ public class LocatableList {
 
 	public Locatable[] getLocations() {
 		return new Locatable[0];
+	}
+
+	public String display() {
+		return "{ a: b }";
 	}
 
 }
