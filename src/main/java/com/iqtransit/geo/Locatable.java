@@ -3,6 +3,8 @@ package com.iqtransit.geo;
 public class Locatable {
 	public double latitude;
 	public double longitude;
+    public double bearing;
+    public double speed;
 	public String id;
 
 	public Locatable(String id, double latitute, double longitude) {
@@ -11,9 +13,16 @@ public class Locatable {
 		this.id = id;
 	}
 
+    public Locatable(String id, double latitute, double longitude, double speed, double bearing) {
+        this.latitude = latitute;
+        this.longitude = longitude;
+        this.speed = speed;
+        this.bearing = bearing; 
+        this.id = id;
+    }
 	
 	public String toString() {
-        return id + " (" + latitude + ", " + longitude + ")";
+        return id + " (" + latitude + ", " + longitude + ","  + speed + "," + bearing + ")";
     }
 
     // return distance between two locations

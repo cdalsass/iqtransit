@@ -2,8 +2,69 @@ package com.iqtransit.agency;
 
 public class MBTAAgency implements AgencyInterface {
 
+	private int LineNumber(String line_name) {
+
+		/* copied from tontime.js */
+		int line_number = 0; 
+		switch (line_name) {
+
+			case "Greenbush" : 
+				line_number = 1;
+				break;
+			case "Fairmount":       
+				 line_number = 4;
+				 break;
+			case "Fitchburg":   
+				line_number = 9;
+				break;
+			case "Worcester"  :  
+				 line_number = 8;
+				 break;
+			case "Franklin"  :    
+				line_number = 6;
+				break;
+			case "Haverhill" :     
+				 line_number = 11;
+				 break;
+			case "Lowell" : 
+				 line_number = 10;
+				 break;
+			case "Middleborough" :  
+				line_number = 3;
+				break;
+			case "Needham":
+				line_number = 7;
+				break;
+			case "Newburyport"   : 
+				line_number = 12;
+				break;
+			case "Kingston/Plymouth"      : 
+				line_number = 2;
+				break;
+			case "Providence"   : 
+				line_number = 5;
+				break;
+			default: 
+			 	System.out.println("Invalid line name.");
+                break;
+
+        }
+		return line_number;
+	}
+
+	public String getPredictionURL(String line_name, String format) {
+		if (format == "json") {
+			int rail_id = LineNumber(line_name);
+			return "http://developer.mbta.com/lib/RTCR/RailLine_" + rail_id + ".json";
+		} else if (format == "gtfs-realtime") {
+			return "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb";
+		} else {
+			throw new Error("invalid format " + format);
+		}
+	}
+
 	public String[] getLines() {
-		
+
 		String[] results = {
 			"Greenbush",
 			"Fairmount",
