@@ -14,6 +14,12 @@ import com.iqtransit.geo.*;
 import com.iqtransit.agency.*;
 import java.util.Date;
 import java.util.ArrayList;
+import java.sql.SQLException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 
 /**
  * Tests for {@link Foo}.
@@ -23,25 +29,77 @@ import java.util.ArrayList;
 public class GTFSTest {
 
     @Test
-    public void testDownloadGFTS() {
+    public void testDownloadGFTS() throws IOException {
         
+        Properties prop = new Properties();
+        InputStream input = null;
+        String database = "";
+        String dbuser = "";
+        String dbpassword = "";
+        String dbhost = "";
+
+        try {
+            input = new FileInputStream("/Users/cdalsass/dev/tontime-crowd/iqtransit/config.properties");
+     
+            // load a properties file
+            prop.load(input);
+    
+            // get the property value and print it out
+            database = prop.getProperty("database");
+            dbuser = prop.getProperty("dbuser");
+            dbpassword = prop.getProperty("dbpassword");
+            dbhost = prop.getProperty("dbhost");
+     
+        } catch (IOException ex) {
+            //ex.printStackTrace();
+            throw ex;
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
         AgencyInterface mbta = new MBTAAgency();
         PredictionQuery pq = new PredictionQuery(mbta);
+        
         pq.fetchPrediction(null, "gtfs-realtime", null);
+        
         org.junit.Assert.assertEquals("should have loaded some bytes", true, pq.getLoadedBytes().length > 0 );
+        
         ArrayList<Locatable> l = pq.parse();
-        LocationStore s = new LocationStore();
+        
+        org.junit.Assert.assertEquals("should have parsed some" ,true, l.size() >= 0 /* temporarily set to 0 during severe snowstorm outage */);
+
+        LocationStore s = new LocationStore("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
+        
+        try {
+            s.connect();
+        } catch (Exception e) {
+            System.out.println("unable to connect to database " + e.toString()); 
+        }
+        
 
         for(Locatable locatable: l){
             // pq.store();
-            s.store(locatable);
+            try {
+                org.junit.Assert.assertEquals("should be able to insert record" , true , s.store(locatable));
+            } catch (SQLException e) {
+                System.out.println("database error storing " + e.toString());
+            }
             //System.out.println("retrieved element: " + item);
         }
 
-//Read more: http://javarevisited.blogspot.com/2011/05/example-of-arraylist-in-java-tutorial.html#ixzz3PH2GeCEM
-
-  //      System.out.println(pq.toString()); // for debugging.
-                
+        try {
+            s.close();
+        } catch (SQLException e) {
+            System.out.println("Error closing " + e.toString());
+        }
+    
     }
 
 }

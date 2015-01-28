@@ -3,6 +3,8 @@ import java.net.Socket;
 import java.util.List;
 import java.util.ArrayList;
 
+/* deals with the raw socket connections */
+
 public class ChatConnectionManager implements ConnectionManager {
     
     ArrayList < ChatWorker > connections;
