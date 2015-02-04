@@ -8,7 +8,6 @@ public class LocatableJSONFormatter implements LocatableFormatter {
         Gson gson = new Gson();
         try {
             Locatable result = gson.fromJson(json, Locatable.class);
-            System.out.println("OBJECT + " + result.toString());
             return result;
         } catch (Exception e) {
             e.printStackTrace();

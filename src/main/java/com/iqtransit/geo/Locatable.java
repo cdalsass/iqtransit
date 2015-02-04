@@ -6,6 +6,7 @@ public class Locatable {
     public double bearing;
     public double speed;
 	public String id;
+    public String trip;
 
 	public Locatable(String id, double latitute, double longitude) {
 		this.latitude = latitute;
@@ -13,12 +14,13 @@ public class Locatable {
 		this.id = id;
 	}
 
-    public Locatable(String id, double latitute, double longitude, double speed, double bearing) {
+    public Locatable(String id, String trip, double latitute, double longitude, double speed, double bearing) {
         this.latitude = latitute;
         this.longitude = longitude;
         this.speed = speed;
         this.bearing = bearing; 
         this.id = id;
+        this.trip = trip;
     }
 	
 	public String toString() {

@@ -39,7 +39,7 @@ public class GTFSTest {
         String dbhost = "";
 
         try {
-            input = new FileInputStream("/Users/cdalsass/dev/tontime-crowd/iqtransit/config.properties");
+            input = new FileInputStream("/Users/cdalsass/dev/iqtransit/config.properties");
      
             // load a properties file
             prop.load(input);

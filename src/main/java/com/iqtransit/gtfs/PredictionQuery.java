@@ -90,9 +90,10 @@ public class PredictionQuery {
 			    System.out.println(" vehicle = " + entity.toString());
 			    VehiclePosition vehicle = entity.getVehicle();
 			    //Position.Builder position = Position.newBuilder();
-			    Position position=vehicle.getPosition();
+			    Position position = vehicle.getPosition();
 			    TripDescriptor trip = vehicle.getTrip();
-			    Locatable locatable = new Locatable(trip.getTripId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
+			    VehicleDescriptor vehicle_for_id = vehicle.getVehicle();
+			    Locatable locatable = new Locatable(vehicle_for_id.getId(), trip.getTripId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
 			    results.add(locatable);
 
 	        }
