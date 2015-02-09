@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.iqtransit.*;
-import com.iqtransit.agency.*;
+import com.iqtransit.agency.AgencyInterface;
 import com.iqtransit.gtfs.GtfsRealtime.*;
-import com.iqtransit.gtfs.*;
-import com.iqtransit.geo.*;
+import com.iqtransit.geo.Locatable;
 
 
 public class PredictionQuery {
@@ -102,11 +100,6 @@ public class PredictionQuery {
 	        return results; 
 		}
 
-		public boolean store() {
-			// are there multiple ways you can store besides database? Log file , cloud?
-			// probalby want a storage class to abstract that all away. 
-			return true;
-		}
 		/*
 
         try {
