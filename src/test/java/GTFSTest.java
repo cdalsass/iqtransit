@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.PredictionQuery;
+import com.iqtransit.gtfs.RealtimeQuery;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -65,13 +65,17 @@ public class GTFSTest {
 
 
         AgencyInterface mbta = new MBTAAgency();
-        PredictionQuery pq = new PredictionQuery(mbta);
+        RealtimeQuery pq1 = new VehiclePositionQuery(mbta);
+        RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
+        RealtimeQuery pq3 = new VehiclePositionQuery(mbta);
         
-        pq.fetchPrediction(null, "gtfs-realtime", null);
-        
-        org.junit.Assert.assertEquals("should have loaded some bytes", true, pq.getLoadedBytes().length > 0 );
-        
-        ArrayList<Locatable> l = pq.parse();
+        RealtimeQuery queries[]  = new RealtimeQuery[] {pq1, pq2, pq3};
+
+        for (RealtimeQuery rq : queries) {
+            rq.fetchPrediction(null, "gtfs-realtime", null);
+            org.junit.Assert.assertEquals("should have loaded some bytes", true, rq.getLoadedBytes().length > 0 );
+            RealtimeResult l = pq.parse();
+        }
         
         org.junit.Assert.assertEquals("should have parsed some" ,true, l.size() >= 0 /* temporarily set to 0 during severe snowstorm outage */);
 
@@ -84,8 +88,8 @@ public class GTFSTest {
         }
         
 
-        for(Locatable locatable: l){
-            // pq.store();
+        for(RealtimeResult realtimeresult: l){
+                realtimeresult.store();
             try {
                 org.junit.Assert.assertEquals("should be able to insert record" , true , s.store(locatable));
             } catch (SQLException e) {

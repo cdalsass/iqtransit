@@ -52,7 +52,7 @@ public class MBTAAgency implements AgencyInterface {
 		return line_number;
 	}
 
-	public String getPredictionURL(String line_name, String format) {
+	public String RealtimeQuery(String line_name, String format) {
 		if (format == "json") {
 			int rail_id = LineNumber(line_name);
 			return "http://developer.mbta.com/lib/RTCR/RailLine_" + rail_id + ".json";

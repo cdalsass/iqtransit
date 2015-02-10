@@ -6,5 +6,5 @@ public interface AgencyInterface {
 	abstract double[][] getLinePaths(String lineid); 
 	abstract double[] getReducedLinePath(String lineid);
 	abstract double[] getClosedPoly(String lineid);
-	abstract String getPredictionURL(String lineid, String format);
+	abstract String RealtimeQuery(String lineid, String format);
 }

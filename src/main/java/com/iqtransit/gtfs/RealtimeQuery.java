@@ -26,7 +26,7 @@ import com.iqtransit.gtfs.GtfsRealtime.*;
 import com.iqtransit.geo.Locatable;
 
 
-public class PredictionQuery {
+public class RealtimeQuery {
 
 		private class PredictionData {
 
@@ -52,7 +52,7 @@ public class PredictionQuery {
  			return last_prediction.bytes;
  		}
 
-		public PredictionQuery(AgencyInterface agency) {
+		public RealtimeQuery(AgencyInterface agency) {
 			this.agency = agency;
 		}
 	
@@ -124,7 +124,7 @@ public class PredictionQuery {
 		    	try {
 
 			        CloseableHttpClient httpclient = HttpClients.createDefault();
-			        HttpGet httpGet = new HttpGet(this.agency.getPredictionURL(line, format));
+			        HttpGet httpGet = new HttpGet(this.agency.RealtimeQuery(line, format));
 			        CloseableHttpResponse response = httpclient.execute(httpGet);
 			        // The underlying HTTP connection is still held by the response object
 			        // to allow the response content to be streamed directly from the network socket.
