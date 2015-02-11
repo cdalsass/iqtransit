@@ -1,5 +1,5 @@
 package com.iqtransit.gtfs;
-import com.google.protobuf.CodedInputStream;
+
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -12,27 +12,26 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.io.IOException;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 
 import com.iqtransit.agency.AgencyInterface;
-import com.iqtransit.gtfs.GtfsRealtime.*;
+
 import com.iqtransit.geo.Locatable;
 
 
-public class RealtimeQuery {
+public abstract class RealtimeQuery {
 
-		private class PredictionData {
+		protected class PredictionData {
 
-			private boolean was_parsed;
+			protected boolean was_parsed;
 			public byte[] bytes; 
-			private String as_string;
+			protected String as_string;
 
 			public PredictionData(byte[] bytes) {
 				this.bytes = bytes;
@@ -45,8 +44,11 @@ public class RealtimeQuery {
 
 		}
 
-		private AgencyInterface agency;
-		private PredictionData last_prediction; /* might be json or gtfs binary */
+		// a realtime query must have a parse method. 
+		public abstract ArrayList<RealtimeResult> parse();
+
+		protected AgencyInterface agency;
+		protected PredictionData last_prediction; /* might be json or gtfs binary */
 		 
  		public byte[] getLoadedBytes() {
  			return last_prediction.bytes;
@@ -66,55 +68,8 @@ public class RealtimeQuery {
 			//return new String(last_prediction);
 		}
 
-		public ArrayList<Locatable> parse() {
-
-			ArrayList<Locatable> results = new ArrayList<Locatable>();
-
-	        CodedInputStream in = CodedInputStream.newInstance(this.last_prediction.bytes);
-	        FeedMessage.Builder b = FeedMessage.newBuilder();
-	        try {
-	        	b.mergeFrom(in, null);
-	        } catch (IOException e) {
-	        	System.out.println("Error parsing GTFS realtime data");
-	        }
-
-	        FeedMessage feed = b.build();
-	        List<FeedEntity>  entities = feed.getEntityList();
-	        for (  FeedEntity entity : entities) {
-	        	
-	        	if (!entity.hasVehicle()) {
-			      //continue;
-			    }
-			    System.out.println(" vehicle = " + entity.toString());
-			    VehiclePosition vehicle = entity.getVehicle();
-			    //Position.Builder position = Position.newBuilder();
-			    Position position = vehicle.getPosition();
-			    TripDescriptor trip = vehicle.getTrip();
-			    VehicleDescriptor vehicle_for_id = vehicle.getVehicle();
-			    Locatable locatable = new Locatable(vehicle_for_id.getId(), trip.getTripId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
-			    results.add(locatable);
-
-	        }
-
-	        this.last_prediction.was_parsed = true; 
-	        return results; 
-		}
-
-		/*
-
-        try {
-            //GtfsRealtime rt = new GtfsRealtime();
-            FeedMessage.Builder b = FeedMessage.newBuilder();
-            FeedMessage feed = parseFeed("/tmp/TripUpdates.pb");
-            List<FeedEntity>  entities = feed.getEntityList();
-            org.junit.Assert.assertEquals("should be at least a few entities", true, entities.size() > 0 );
-        } catch (Exception t) {
-            org.junit.Assert.assertEquals("should not throw exception " + t, true, false);
-            System.err.println(t);
-        }
-        */
-        
-        /* fetch predictions across the entire global universe of trains */
+		
+      
 
 		public void fetchPrediction(String line, String format, Date d) {
 			

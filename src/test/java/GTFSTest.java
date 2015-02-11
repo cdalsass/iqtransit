@@ -67,17 +67,9 @@ public class GTFSTest {
         AgencyInterface mbta = new MBTAAgency();
         RealtimeQuery pq1 = new VehiclePositionQuery(mbta);
         RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
-        RealtimeQuery pq3 = new VehiclePositionQuery(mbta);
+        RealtimeQuery pq3 = new TripUpdatesQuery(mbta);
         
         RealtimeQuery queries[]  = new RealtimeQuery[] {pq1, pq2, pq3};
-
-        for (RealtimeQuery rq : queries) {
-            rq.fetchPrediction(null, "gtfs-realtime", null);
-            org.junit.Assert.assertEquals("should have loaded some bytes", true, rq.getLoadedBytes().length > 0 );
-            RealtimeResult l = pq.parse();
-        }
-        
-        org.junit.Assert.assertEquals("should have parsed some" ,true, l.size() >= 0 /* temporarily set to 0 during severe snowstorm outage */);
 
         LocationStore s = new LocationStore("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
         
@@ -88,15 +80,30 @@ public class GTFSTest {
         }
         
 
-        for(RealtimeResult realtimeresult: l){
+        for (RealtimeQuery rq : queries) {
+            rq.fetchPrediction(null, "gtfs-realtime", null);
+            org.junit.Assert.assertEquals("should have loaded some bytes", true, rq.getLoadedBytes().length > 0 );
+            ArrayList<RealtimeResult> list_of_results = rq.parse();
+            org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 0 /* temporarily set to 0 during severe snowstorm outage */);
+
+            for(RealtimeResult realtimeresult: list_of_results) {
+
                 realtimeresult.store();
-            try {
-                org.junit.Assert.assertEquals("should be able to insert record" , true , s.store(locatable));
-            } catch (SQLException e) {
-                System.out.println("database error storing " + e.toString());
-            }
+                
+                try {
+                    org.junit.Assert.assertEquals("should be able to insert record" , true , s.store(locatable));
+                } catch (SQLException e) {
+                    System.out.println("database error storing " + e.toString());
+                }
             //System.out.println("retrieved element: " + item);
+            }
+
         }
+        
+
+        
+
+        
 
         try {
             s.close();

@@ -61,7 +61,7 @@ public class LocationStore {
 		return true; 
 	}
 
-	public boolean store(Locatable l) throws SQLException {
+	public boolean store(VehiclePosition l) throws SQLException {
 
 		String query = "INSERT INTO prediction_monitor (id, created, vehicle_id, speed, bearing, longitude, latitude) values (null, now(), ?,?,?,?,?)";
  
