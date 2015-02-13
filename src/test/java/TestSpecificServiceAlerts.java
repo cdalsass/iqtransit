@@ -23,11 +23,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 
-/**
- * Tests for {@link Foo}.
- *
- * @author user@example.com (John Doe)
- */
 public class TestSpecificServiceAlerts {
 
     @Test
@@ -37,94 +32,26 @@ public class TestSpecificServiceAlerts {
         RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
         
         pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb", "gtfs-realtime");
-        System.out.println(pq2.dump());;
+        //System.out.println(pq2.dump());;
 
         org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 1000 );
 
         ArrayList<RealtimeResult> list_of_results = pq2.parse();       
         org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 10);
 
-        for(RealtimeResult realtimeresult: list_of_results) {       
-          //  System.out.println("HERE IT IS" + realtimeresult.toString());   
-        //System.out.println("retrieved element: " + item);
+        for(RealtimeResult realtimeresult: list_of_results) {   
+            
+            ServiceAlert sa = (ServiceAlert) realtimeresult;
+            
+            if ("26578".equals(sa.id))    {
+                org.junit.Assert.assertEquals("26578 should have 1 active periods" , 1,  sa.active_periods.size());
+            }
+
+            if ("63154".equals(sa.id)) {
+                org.junit.Assert.assertEquals("63154 should have 3 informed entities" , 3,  sa.informed_entities.size());
+            }
+
         }    
     }
-
-/*
-
-    @Test
-    public void testDownloadServiceAlerts() throws IOException {
-        
-        Properties prop = new Properties();
-        InputStream input = null;
-        String database = "";
-        String dbuser = "";
-        String dbpassword = "";
-        String dbhost = "";
-
-        try {
-            input = new FileInputStream("/Users/cdalsass/dev/iqtransit/config.properties");
-     
-            // load a properties file
-            prop.load(input);
-    
-            // get the property value and print it out
-            database = prop.getProperty("database");
-            dbuser = prop.getProperty("dbuser");
-            dbpassword = prop.getProperty("dbpassword");
-            dbhost = prop.getProperty("dbhost");
-     
-        } catch (IOException ex) {
-            //ex.printStackTrace();
-            throw ex;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-
-        AgencyInterface mbta = new MBTAAgency();
-        RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
-       
-        MySQL mysql = new MySQL("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
-        
-        try {
-            mysql.connect();
-            System.out.println("just connected");
-        } catch (Exception e) {
-            System.out.println("unable to connect to database " + e.toString()); 
-        }
-       
-        pq2.fetchPrediction(null, "gtfs-realtime", null);
-        org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 0 );
-
-        ArrayList<RealtimeResult> list_of_results = pq2.parse();       
-        org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 0 );
-
-        for(RealtimeResult realtimeresult: list_of_results) {       
-            
-            //System.out.println(realtimeresult.toString());   
-
-            try {
-                org.junit.Assert.assertEquals("should be able to insert record" , true , realtimeresult.store(mysql));   
-            } catch (SQLException e) {
-                System.out.println("database error storing " + e.toString());
-            }
-        //System.out.println("retrieved element: " + item);
-        }
-        
-
-        try {
-            mysql.close();
-        } catch (SQLException e) {
-            System.out.println("Error closing " + e.toString());
-        }
-    
-    } */
 
 }

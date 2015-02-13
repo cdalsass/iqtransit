@@ -1,9 +1,9 @@
 package com.iqtransit.gtfs;
-import com.iqtransit.db.MySQL; 
 import java.sql.SQLException;
+import java.sql.Connection;
 
 public interface RealtimeResult {
 	
-	public boolean store(MySQL mysql) throws SQLException;
-
+	public boolean store(Connection conn) throws SQLException;
+	
 }

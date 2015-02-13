@@ -15,7 +15,6 @@ public class VehiclePositionQuery extends RealtimeQuery {
 		super(agency);
 	}
 
-
 	public String GetDownloadUrl(String line, String format) {
 		return this.agency.VehiclePositionUrl();
 	}

@@ -1,10 +1,10 @@
 package com.iqtransit.gtfs;
-import com.iqtransit.db.MySQL;
 import com.iqtransit.gtfs.RealtimeResult;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Connection;
 
 public class VehiclePosition implements RealtimeResult {
 
@@ -14,6 +14,8 @@ public class VehiclePosition implements RealtimeResult {
     public double speed;
 	public String id;
     public String trip;
+
+
 
     public VehiclePosition(String id, String trip, double latitute, double longitude, double speed, double bearing) {
         this.latitude = latitute;
@@ -27,13 +29,14 @@ public class VehiclePosition implements RealtimeResult {
 	public String toString() {
         return id + " (" + latitude + ", " + longitude + ","  + speed + "," + bearing + ")";
     }
- 
+    
+    
 
-    public boolean store(MySQL mysql) throws SQLException {
+    public boolean store(Connection conn) throws SQLException {
 
-        String query = "INSERT INTO prediction_monitor (id, created, vehicle_id, speed, bearing, longitude, latitude) values (null, now(), ?,?,?,?,?)";
+        String query = "INSERT INTO vehicle_position (id, created, vehicle_id, speed, bearing, longitude, latitude) values (null, now(), ?,?,?,?,?)";
 
-        PreparedStatement preparedStmt = mysql.getConn().prepareStatement(query);
+        PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.setString (1, this.id);
         preparedStmt.setDouble (2, this.speed);
         preparedStmt.setDouble (3, this.bearing);
