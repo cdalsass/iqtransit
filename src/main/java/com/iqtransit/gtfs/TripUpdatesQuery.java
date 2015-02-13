@@ -9,16 +9,16 @@ import java.util.List;
 
 /* responsible for parsing and downloading from remote source. */
 
-public class VehiclePositionQuery extends RealtimeQuery {
-	
-	public VehiclePositionQuery(AgencyInterface agency) {
-		super(agency);
-	}
+public class TripUpdatesQuery extends RealtimeQuery {
 
+	public TripUpdatesQuery(AgencyInterface agency) {
+			super(agency);
+	}
 
 	public String GetDownloadUrl(String line, String format) {
-		return this.agency.VehiclePositionUrl();
+		return this.agency.TripUpdatesUrl();
 	}
+
 
 	public ArrayList<RealtimeResult> parse() {
 
@@ -53,5 +53,4 @@ public class VehiclePositionQuery extends RealtimeQuery {
         this.last_prediction.was_parsed = true; 
         return results; 
 	}
-
 }

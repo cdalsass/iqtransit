@@ -1,19 +1,21 @@
-package com.iqtransit.gtfs;
+package com.iqtransit.db;
 import com.iqtransit.geo.Locatable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-public class LocationStore {
+
+public class MySQL {
 	
 	private final String url;
 	private Connection conn;
 	
-	public LocationStore( String url) {
+	public MySQL( String url) {
 		this.url = url;
+	}
+
+	public Connection getConn() {
+		return this.conn;
 	}
 
 	public boolean connect() throws Exception {
@@ -59,19 +61,6 @@ public class LocationStore {
 		return true; 
 	}
 
-	public boolean store(VehiclePosition l) throws SQLException {
-
-		String query = "INSERT INTO prediction_monitor (id, created, vehicle_id, speed, bearing, longitude, latitude) values (null, now(), ?,?,?,?,?)";
- 
-    	PreparedStatement preparedStmt = this.conn.prepareStatement(query);
-    	preparedStmt.setString (1, l.id);
-    	preparedStmt.setDouble (2, l.speed);
-    	preparedStmt.setDouble (3, l.bearing);
-    	preparedStmt.setDouble (4, l.longitude);
-    	preparedStmt.setDouble (5, l.latitude);
- 		preparedStmt.execute();
-		//System.out.println("tripid = " + l.id + " bearing = " + l.bearing + " speed = " + l.speed + " latitude = " + l.latitude + " longitude" + l.longitude);
-		return true; 
-	}
+	
 
 }

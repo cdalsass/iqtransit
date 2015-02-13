@@ -28,10 +28,10 @@ import java.util.Properties;
  *
  * @author user@example.com (John Doe)
  */
-public class GTFSTest {
+public class TestServiceAlerts {
 
     @Test
-    public void testDownloadGFTS() throws IOException {
+    public void testDownloadServiceAlerts() throws IOException {
         
         Properties prop = new Properties();
         InputStream input = null;
@@ -67,12 +67,8 @@ public class GTFSTest {
 
 
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeQuery pq1 = new VehiclePositionQuery(mbta);
         RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
-        RealtimeQuery pq3 = new TripUpdatesQuery(mbta);
-        
-        RealtimeQuery queries[]  = new RealtimeQuery[] { pq1, pq2, pq3 };
-
+       
         MySQL mysql = new MySQL("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
         
         try {
@@ -81,24 +77,25 @@ public class GTFSTest {
         } catch (Exception e) {
             System.out.println("unable to connect to database " + e.toString()); 
         }
-        
+       
+        pq2.fetchPrediction(null, "gtfs-realtime", null);
+        org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 0 );
 
-        for (RealtimeQuery rq : queries) {
+        ArrayList<RealtimeResult> list_of_results = pq2.parse();       
+        org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 0 /* temporarily set to 0 during severe snowstorm outage */);
 
-            rq.fetchPrediction(null, "gtfs-realtime", null);
-            org.junit.Assert.assertEquals("should have loaded some bytes", true, rq.getLoadedBytes().length > 0 );
-            ArrayList<RealtimeResult> list_of_results = rq.parse();       
-            org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 0 /* temporarily set to 0 during severe snowstorm outage */);
+        for(RealtimeResult realtimeresult: list_of_results) {       
+            
+            System.out.println(realtimeresult.toString());   
 
-            for(RealtimeResult realtimeresult: list_of_results) {          
-                try {
-                    org.junit.Assert.assertEquals("should be able to insert record" , true , realtimeresult.store(mysql));
-                } catch (SQLException e) {
-                    System.out.println("database error storing " + e.toString());
-                }
-            //System.out.println("retrieved element: " + item);
+            try {
+                org.junit.Assert.assertEquals("should be able to insert record" , true , realtimeresult.store(mysql));   
+            } catch (SQLException e) {
+                System.out.println("database error storing " + e.toString());
             }
+        //System.out.println("retrieved element: " + item);
         }
+        
 
         try {
             mysql.close();

@@ -68,9 +68,8 @@ public abstract class RealtimeQuery {
 			//return new String(last_prediction);
 		}
 
-		
-      
-
+		public abstract String GetDownloadUrl(String line, String format);	
+ 
 		public void fetchPrediction(String line, String format, Date d) {
 			
 			if (d == null) {
@@ -79,7 +78,9 @@ public abstract class RealtimeQuery {
 		    	try {
 
 			        CloseableHttpClient httpclient = HttpClients.createDefault();
-			        HttpGet httpGet = new HttpGet(this.agency.RealtimeQuery(line, format));
+			        
+			        HttpGet httpGet = new HttpGet(this.GetDownloadUrl(line, format));
+
 			        CloseableHttpResponse response = httpclient.execute(httpGet);
 			        // The underlying HTTP connection is still held by the response object
 			        // to allow the response content to be streamed directly from the network socket.

@@ -52,6 +52,18 @@ public class MBTAAgency implements AgencyInterface {
 		return line_number;
 	}
 
+	public String VehiclePositionUrl() {
+		return  "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb";
+	}
+
+	public String ServiceAlertUrl() {
+		return "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb";
+	}
+
+	public String TripUpdatesUrl() {
+		return "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb";
+	}
+
 	public String RealtimeQuery(String line_name, String format) {
 		if (format == "json") {
 			int rail_id = LineNumber(line_name);
