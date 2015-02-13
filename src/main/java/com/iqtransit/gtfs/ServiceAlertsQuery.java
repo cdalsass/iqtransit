@@ -29,6 +29,7 @@ public class ServiceAlertsQuery extends RealtimeQuery {
         try {
         	b.mergeFrom(in, null);
         } catch (IOException e) {
+        	// need better way to handle these errors in future.
         	System.out.println("Error parsing GTFS realtime data");
         }
 
@@ -40,8 +41,7 @@ public class ServiceAlertsQuery extends RealtimeQuery {
 		      //continue;
 		    }
 		    
-		    System.out.println(" vehicle = " + entity.toString());
-		    
+		   
 		    com.iqtransit.gtfs.GtfsRealtime.Alert alert = entity.getAlert();
 
 		    java.util.List<com.iqtransit.gtfs.GtfsRealtime.EntitySelector> informed_entity_list = alert.getInformedEntityList();
@@ -55,12 +55,16 @@ public class ServiceAlertsQuery extends RealtimeQuery {
 		   // VehiclePosition vp = new VehiclePosition(vehicle_for_id.getId(), trip.getTripId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
 
 		    String description_text = null;
+		    String header_text = null;
 
 		    if (alert.hasDescriptionText()) {
 		    	description_text = alert.getDescriptionText().getTranslation(0).getText();
 		    }
+		    if (alert.hasHeaderText()) {
+		    	header_text = alert.getHeaderText().getTranslation(0).getText();
+		    }
 
-		    com.iqtransit.gtfs.ServiceAlert service_alert = new com.iqtransit.gtfs.ServiceAlert(entity.getId(), alert.getCause().getNumber(), alert.getEffect().getNumber(), description_text);
+		    com.iqtransit.gtfs.ServiceAlert service_alert = new com.iqtransit.gtfs.ServiceAlert(entity.getId(), alert.getCause().getNumber(), alert.getEffect().getNumber(), header_text, description_text);
 		    results.add(service_alert);
 
         }

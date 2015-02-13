@@ -19,11 +19,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import java.util.List;
 import com.iqtransit.agency.AgencyInterface;
 
 import com.iqtransit.geo.Locatable;
-
+import com.iqtransit.gtfs.GtfsRealtime.*;
+import com.google.protobuf.CodedInputStream;
 
 public abstract class RealtimeQuery {
 
@@ -68,6 +73,23 @@ public abstract class RealtimeQuery {
 			//return new String(last_prediction);
 		}
 
+		public String dump() {
+			CodedInputStream in = CodedInputStream.newInstance(this.last_prediction.bytes);
+			FeedMessage.Builder b = FeedMessage.newBuilder();
+			try {
+	        	b.mergeFrom(in, null);
+	        } catch (IOException e) {
+	        	System.out.println("Error parsing GTFS realtime data");
+	        }
+	        FeedMessage feed = b.build();
+	        List<FeedEntity>  entities = feed.getEntityList();
+	        String result = "";
+	        for (  FeedEntity entity : entities) {
+	        	result += entity.toString();
+	        };
+	        return result;
+		}
+
 		public abstract String GetDownloadUrl(String line, String format);	
  
 		public void fetchPrediction(String line, String format, Date d) {
@@ -97,8 +119,10 @@ public abstract class RealtimeQuery {
 			            //EntityUtils.consume(entity1);
 			           	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					    entity1.writeTo(baos);
-				
-					    last_prediction = new PredictionData(baos.toByteArray());
+						
+						// factoring of what to do once you have bytes. 
+						setBytes(baos.toByteArray());
+					    
 
 					} catch (Exception e) {
 						System.out.println("Error reading from http response " + e.toString());
@@ -113,4 +137,14 @@ public abstract class RealtimeQuery {
 				// fetch an older prediction source... database?  
 			}
 		}
+
+		private void setBytes(byte [] bytes) {
+			last_prediction = new PredictionData(bytes);
+		}
+
+		public void  loadLocalFile(String filename, String format) throws IOException {	
+    		Path path = Paths.get(filename);
+    		setBytes(Files.readAllBytes(path));
+  		}
+
 }

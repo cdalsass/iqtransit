@@ -28,8 +28,30 @@ import java.util.Properties;
  *
  * @author user@example.com (John Doe)
  */
-public class TestServiceAlerts {
-    
+public class TestSpecificServiceAlerts {
+
+    @Test
+    public void testSpecificAlerts() throws IOException {
+        
+        AgencyInterface mbta = new MBTAAgency();
+        RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
+        
+        pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb", "gtfs-realtime");
+        System.out.println(pq2.dump());;
+
+        org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 1000 );
+
+        ArrayList<RealtimeResult> list_of_results = pq2.parse();       
+        org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 10);
+
+        for(RealtimeResult realtimeresult: list_of_results) {       
+          //  System.out.println("HERE IT IS" + realtimeresult.toString());   
+        //System.out.println("retrieved element: " + item);
+        }    
+    }
+
+/*
+
     @Test
     public void testDownloadServiceAlerts() throws IOException {
         
@@ -103,6 +125,6 @@ public class TestServiceAlerts {
             System.out.println("Error closing " + e.toString());
         }
     
-    } 
+    } */
 
 }
