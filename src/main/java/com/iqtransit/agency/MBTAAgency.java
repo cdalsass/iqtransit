@@ -64,7 +64,7 @@ public class MBTAAgency implements AgencyInterface {
 		return "http://developer.mbta.com/lib/GTRTFS/Alerts/TripUpdates.pb";
 	}
 
-	public String RealtimeQuery(String line_name, String format) {
+	public String RealtimeSource(String line_name, String format) {
 		if (format == "json") {
 			int rail_id = LineNumber(line_name);
 			return "http://developer.mbta.com/lib/RTCR/RailLine_" + rail_id + ".json";

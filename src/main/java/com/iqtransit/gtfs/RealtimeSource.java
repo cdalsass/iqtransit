@@ -26,11 +26,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import com.iqtransit.agency.AgencyInterface;
 
-import com.iqtransit.geo.Locatable;
-import com.iqtransit.gtfs.GtfsRealtime.*;
-import com.google.protobuf.CodedInputStream;
-
-public abstract class RealtimeQuery {
+public abstract class RealtimeSource {
 
 		protected class PredictionData {
 
@@ -49,9 +45,6 @@ public abstract class RealtimeQuery {
 
 		}
 
-		// a realtime query must have a parse method. 
-		public abstract ArrayList<RealtimeResult> parse();
-
 		protected AgencyInterface agency;
 		protected PredictionData last_prediction; /* might be json or gtfs binary */
 		 
@@ -59,41 +52,15 @@ public abstract class RealtimeQuery {
  			return last_prediction.bytes;
  		}
 
-		public RealtimeQuery(AgencyInterface agency) {
+		public RealtimeSource(AgencyInterface agency) {
 			this.agency = agency;
 		}
 	
-		public String toString() {
-			if (last_prediction.was_parsed == true) {
-				return last_prediction.as_string;
-			} else {
-				this.parse();
-				return last_prediction.as_string;
-			}
-			//return new String(last_prediction);
-		}
-
-		public String dump() {
-			CodedInputStream in = CodedInputStream.newInstance(this.last_prediction.bytes);
-			FeedMessage.Builder b = FeedMessage.newBuilder();
-			try {
-	        	b.mergeFrom(in, null);
-	        } catch (IOException e) {
-	        	System.out.println("Error parsing GTFS realtime data");
-	        }
-	        FeedMessage feed = b.build();
-	        List<FeedEntity>  entities = feed.getEntityList();
-	        String result = "";
-	        for (  FeedEntity entity : entities) {
-	        	result += entity.toString();
-	        };
-	        return result;
-		}
-
 		public abstract String GetDownloadUrl(String line, String format);	
  
-		public void fetchPrediction(String line, String format, Date d) {
+		public RealtimeResult fetchPrediction(String line, String format, Date d) {
 			
+			byte [] results = null; 
 			if (d == null) {
 				// could be from a database, URL, local xml, json, cloud service. could also be historical for test cases.
 				// this fetches a new prediction. 
@@ -121,8 +88,8 @@ public abstract class RealtimeQuery {
 					    entity1.writeTo(baos);
 						
 						// factoring of what to do once you have bytes. 
-						setBytes(baos.toByteArray());
-					    
+						results = baos.toByteArray();
+					    setBytes(results);
 
 					} catch (Exception e) {
 						System.out.println("Error reading from http response " + e.toString());
@@ -136,15 +103,23 @@ public abstract class RealtimeQuery {
 			} else {
 				// fetch an older prediction source... database?  
 			}
+
+			return Result(); 
 		}
 
 		private void setBytes(byte [] bytes) {
 			last_prediction = new PredictionData(bytes);
 		}
 
-		public void  loadLocalFile(String filename, String format) throws IOException {	
+		// this associates the corrolary results class with the source. 
+		public RealtimeResult Result() {
+			return this.Result();
+		}
+
+		public RealtimeResult  loadLocalFile(String filename, String format) throws IOException {	
     		Path path = Paths.get(filename);
     		setBytes(Files.readAllBytes(path));
+    		return Result(); 
   		}
 
 }

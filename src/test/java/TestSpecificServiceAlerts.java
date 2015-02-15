@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.RealtimeQuery;
+import com.iqtransit.gtfs.RealtimeSource;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -29,17 +29,17 @@ public class TestSpecificServiceAlerts {
     public void testSpecificAlerts() throws IOException {
         
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeQuery pq2 = new ServiceAlertsQuery(mbta);
+        RealtimeSource pq2 = new ServiceAlertSource(mbta);
         
-        pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb", "gtfs-realtime");
+        RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb", "gtfs-realtime");
         //System.out.println(pq2.dump());;
 
         org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 1000 );
 
-        ArrayList<RealtimeResult> list_of_results = pq2.parse();       
+        ArrayList<RealtimeEntity> list_of_results = pq3.parse();       
         org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 10);
 
-        for(RealtimeResult realtimeresult: list_of_results) {   
+        for(RealtimeEntity realtimeresult: list_of_results) {   
             
             ServiceAlert sa = (ServiceAlert) realtimeresult;
             

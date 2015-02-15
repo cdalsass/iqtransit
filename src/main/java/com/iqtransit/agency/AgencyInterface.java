@@ -6,7 +6,7 @@ public interface AgencyInterface {
 	abstract double[][] getLinePaths(String lineid); 
 	abstract double[] getReducedLinePath(String lineid);
 	abstract double[] getClosedPoly(String lineid);
-	abstract String RealtimeQuery(String lineid, String format);
+	abstract String RealtimeSource(String lineid, String format);
 	abstract String VehiclePositionUrl();
 	abstract String ServiceAlertUrl();
 	abstract String TripUpdatesUrl();

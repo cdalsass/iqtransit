@@ -11,9 +11,17 @@ import com.iqtransit.gtfs.TimeRange;
 import com.iqtransit.gtfs.Entity;
 import java.util.ArrayList;
 
+import com.google.protobuf.CodedInputStream;
+import com.iqtransit.gtfs.GtfsRealtime.*;
+import com.iqtransit.gtfs.TimeRange;
+import com.iqtransit.gtfs.Entity;
+import com.iqtransit.gtfs.ServiceAlert;
+import java.io.IOException;
+import java.util.List;
+
 /* Core code responsible for data structure of a service alert. Keeps me from being dependent on Google GTFS throughout my app. Currently also maps data within this structure to a data table in SQL. */
 
-public class ServiceAlert implements RealtimeResult {
+public class ServiceAlert extends RealtimeEntity {
 
 	public int cause;
 	public int effect;
@@ -122,4 +130,7 @@ CREATE TABLE `service_alert_informed_entities` (
         // tried returning false if nothing done, but this broke my tests.  
         return true; 
     }
+
+    
+
 }
