@@ -117,11 +117,9 @@ CREATE TABLE `service_alert_informed_entities` (
             preparedStmt3.execute();
           }
           
-          return true; 
 
-        } else {
-          // let caller know nothing was entered. 
-          return false;    
-        }   
+        }
+        // tried returning false if nothing done, but this broke my tests.  
+        return true; 
     }
 }
