@@ -80,15 +80,22 @@ public class TestDownloadAll {
             mysql.connect();
             System.out.println("just connected");
         } catch (Exception e) {
+            //throw e;
+            org.junit.Assert.assertEquals("should connect to db", null , e.toString());
             System.out.println("unable to connect to database " + e.toString()); 
         }
         
 
-        for (RealtimeSource rq : queries) {
+        for (RealtimeSource source : queries) {
+            
+            RealtimeResult rtr = null;
+            try {
+                rtr = source.fetch(null, "gtfs-realtime", null);
+            } catch (Exception e) {
+                org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
+            }
 
-            RealtimeResult rtr = rq.fetchPrediction(null, "gtfs-realtime", null);
-
-            org.junit.Assert.assertEquals("should have loaded some bytes", true, rq.getLoadedBytes().length > 0 );
+            org.junit.Assert.assertEquals("should have loaded some bytes", true, source.getLoadedBytes().length > 0 );
 
             ArrayList<RealtimeEntity> list_of_results = rtr.parse();  
 

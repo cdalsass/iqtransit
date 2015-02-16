@@ -22,10 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class TestStoreServiceAlerts {
+public class TestStoreVehiclePosition {
     
     @Test
-    public void testDownloadServiceAlerts() throws IOException {
+    public void testDownloadVehiclePosition() throws IOException {
         
         Properties prop = new Properties();
         InputStream input = null;
@@ -61,7 +61,7 @@ public class TestStoreServiceAlerts {
 
 
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeSource pq2 = new ServiceAlertSource(mbta);
+        RealtimeSource source = new VehiclePositionSource(mbta);
        
         MySQL mysql = new MySQL("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
         
@@ -72,29 +72,22 @@ public class TestStoreServiceAlerts {
             System.out.println("unable to connect to database " + e.toString()); 
             org.junit.Assert.assertEquals("should connect to db", null , e.toString());
         }
-
-        RealtimeResult pq3 = null;
+       
+        RealtimeResult rtr = null;
         try {
-            pq3 = pq2.fetch(null, "gtfs-realtime", null);
+            rtr = source.fetch(null, "gtfs-realtime", null);
         } catch (Exception e) {
             org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
         }
-        //System.out.println(pq2.dump());
-        org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 0 );
 
-        ArrayList<RealtimeEntity> list_of_results = pq3.parse();       
-        org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() >= 0 );
+       //System.out.println(source.dump());
+        org.junit.Assert.assertEquals("should have loaded some bytes", true, source.getLoadedBytes().length > 0 );
+
+        ArrayList<RealtimeEntity> list_of_results = rtr.parse();       
+        org.junit.Assert.assertEquals("should have parsed some" ,true, list_of_results.size() > 0 );
 
         for(RealtimeEntity realtimeresult: list_of_results) {       
             
-            //System.out.println(realtimeresult.toString());   
-            ServiceAlert sa = (ServiceAlert) realtimeresult;
-
-            try {        
-                org.junit.Assert.assertEquals("should be able to delete record" , true , sa.clearStore(mysql.getConn())); 
-            }  catch (SQLException e) {
-                org.junit.Assert.assertEquals("should never hit an exception " , null , e.toString()); 
-            }
 
            try {    
                 org.junit.Assert.assertEquals("should be able to insert record" , true , realtimeresult.store(mysql.getConn()));   

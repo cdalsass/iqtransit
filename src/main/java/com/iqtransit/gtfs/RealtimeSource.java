@@ -49,7 +49,11 @@ public abstract class RealtimeSource {
 		protected PredictionData last_prediction; /* might be json or gtfs binary */
 		 
  		public byte[] getLoadedBytes() {
- 			return last_prediction.bytes;
+ 			if (last_prediction.bytes != null) {
+ 				return last_prediction.bytes;
+ 			} else {
+ 				return new byte [0];
+ 			}
  		}
 
 		public RealtimeSource(AgencyInterface agency) {
@@ -58,7 +62,7 @@ public abstract class RealtimeSource {
 	
 		public abstract String GetDownloadUrl(String line, String format);	
  
-		public RealtimeResult fetchPrediction(String line, String format, Date d) {
+		public RealtimeResult fetch(String line, String format, Date d) throws Exception {
 			
 			byte [] results = null; 
 			if (d == null) {
@@ -69,7 +73,6 @@ public abstract class RealtimeSource {
 			        CloseableHttpClient httpclient = HttpClients.createDefault();
 			        
 			        HttpGet httpGet = new HttpGet(this.GetDownloadUrl(line, format));
-
 			        CloseableHttpResponse response = httpclient.execute(httpGet);
 			        // The underlying HTTP connection is still held by the response object
 			        // to allow the response content to be streamed directly from the network socket.
@@ -82,23 +85,25 @@ public abstract class RealtimeSource {
 			            
 			            HttpEntity entity1 = response.getEntity();
 			            // do something useful with the response body
-			            // and ensure it is fully consumed
-			            //EntityUtils.consume(entity1);
 			           	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					    entity1.writeTo(baos);
+			            // and ensure it is fully consumed
 						
+			            EntityUtils.consume(entity1);
 						// factoring of what to do once you have bytes. 
 						results = baos.toByteArray();
 					    setBytes(results);
 
 					} catch (Exception e) {
 						System.out.println("Error reading from http response " + e.toString());
+						throw e; 
 			        } finally {
 			            response.close();
 			        }
 		    		
 		    	} catch ( IOException e ) {
 		    		System.out.println("Error fetching prediction from URL " + e.toString());
+		    		throw e; 
 		    	}
 			} else {
 				// fetch an older prediction source... database?  
@@ -116,7 +121,7 @@ public abstract class RealtimeSource {
 			return this.Result();
 		}
 
-		public RealtimeResult  loadLocalFile(String filename, String format) throws IOException {	
+		public RealtimeResult loadLocalFile(String filename, String format) throws IOException {	
     		Path path = Paths.get(filename);
     		setBytes(Files.readAllBytes(path));
     		return Result(); 
