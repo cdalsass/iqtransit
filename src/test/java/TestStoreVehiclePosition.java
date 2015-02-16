@@ -13,6 +13,7 @@ import com.iqtransit.gtfs.*;
 import com.iqtransit.geo.*;
 import com.iqtransit.agency.*;
 import com.iqtransit.db.MySQL;
+import com.iqtransit.misc.Config;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -27,43 +28,17 @@ public class TestStoreVehiclePosition {
     @Test
     public void testDownloadVehiclePosition() throws IOException {
         
-        Properties prop = new Properties();
-        InputStream input = null;
-        String database = "";
-        String dbuser = "";
-        String dbpassword = "";
-        String dbhost = "";
-
+        Properties prop  = null;
         try {
-            input = new FileInputStream("/Users/cdalsass/dev/iqtransit/config.properties");
-     
-            // load a properties file
-            prop.load(input);
-    
-            // get the property value and print it out
-            database = prop.getProperty("database");
-            dbuser = prop.getProperty("dbuser");
-            dbpassword = prop.getProperty("dbpassword");
-            dbhost = prop.getProperty("dbhost");
-     
-        } catch (IOException ex) {
-            //ex.printStackTrace();
-            throw ex;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            prop = Config.load();
+        } catch (IOException e) {
+            org.junit.Assert.assertEquals("should read config file", null , e.toString());
         }
-
 
         AgencyInterface mbta = new MBTAAgency();
         RealtimeSource source = new VehiclePositionSource(mbta);
        
-        MySQL mysql = new MySQL("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
+        MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + prop.getProperty("database") + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
         
         try {
             mysql.connect();
