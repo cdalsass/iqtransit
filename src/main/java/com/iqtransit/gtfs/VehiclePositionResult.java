@@ -42,7 +42,7 @@ public class VehiclePositionResult extends RealtimeResult {
             if (!entity.hasVehicle()) {
               //continue;
             }
-            System.out.println(" vehicle = " + entity.toString());
+           // System.out.println(" vehicle = " + entity.toString());
             com.iqtransit.gtfs.GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
             //Position.Builder position = Position.newBuilder();
             com.iqtransit.gtfs.GtfsRealtime.Position position = vehicle.getPosition();

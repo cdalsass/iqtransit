@@ -34,6 +34,7 @@ public class TestPredepartureData {
         org.junit.Assert.assertEquals("should have loaded 100+ bytes", true, csv.length() > 100 );
         System.out.println(csv);
         
+        
     }
 
 }
