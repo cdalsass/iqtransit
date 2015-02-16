@@ -48,7 +48,7 @@ public class VehiclePositionResult extends RealtimeResult {
             com.iqtransit.gtfs.GtfsRealtime.Position position = vehicle.getPosition();
             com.iqtransit.gtfs.GtfsRealtime.TripDescriptor trip = vehicle.getTrip();
             com.iqtransit.gtfs.GtfsRealtime.VehicleDescriptor vehicle_for_id = vehicle.getVehicle();
-            VehiclePosition vp = new VehiclePosition(vehicle_for_id.getId(), trip.getTripId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
+            VehiclePosition vp = new VehiclePosition(vehicle_for_id.getId(), trip.getTripId(), trip.getRouteId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
             results.add(vp);
 
         }
