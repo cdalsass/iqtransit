@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.ArrayList;
+import com.iqtransit.misc.Config;
 
 
 /**
@@ -34,38 +35,12 @@ public class TestDownloadAll {
     @Test
     public void testDownloadGFTS() throws IOException {
         
-        Properties prop = new Properties();
-        InputStream input = null;
-        String database = "";
-        String dbuser = "";
-        String dbpassword = "";
-        String dbhost = "";
-
+        Properties prop  = null;
         try {
-            input = new FileInputStream("/Users/cdalsass/dev/iqtransit/config.properties");
-     
-            // load a properties file
-            prop.load(input);
-    
-            // get the property value and print it out
-            database = prop.getProperty("database");
-            dbuser = prop.getProperty("dbuser");
-            dbpassword = prop.getProperty("dbpassword");
-            dbhost = prop.getProperty("dbhost");
-     
-        } catch (IOException ex) {
-            //ex.printStackTrace();
-            throw ex;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            prop = Config.load();
+        } catch (IOException e) {
+            org.junit.Assert.assertEquals("should read config file", null , e.toString());
         }
-
 
         AgencyInterface mbta = new MBTAAgency();
         RealtimeSource pq1 = new VehiclePositionSource(mbta);
@@ -74,7 +49,7 @@ public class TestDownloadAll {
         
         RealtimeSource queries[]  = new RealtimeSource[] { pq1, pq2, pq3 };
 
-        MySQL mysql = new MySQL("jdbc:mysql://" + dbhost + ":3306/"  + database + "?user=" + dbuser + "&password=" +dbpassword);
+        MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + prop.getProperty("database") + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
         
         try {
             mysql.connect();

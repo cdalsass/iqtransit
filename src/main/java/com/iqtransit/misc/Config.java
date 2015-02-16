@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.ClassLoader;
 
 public class Config {
 
@@ -24,12 +25,11 @@ public class Config {
 
 			prop = new Properties();
 
-			/* String filename = "/config.properties";
-
-	       	input =  Config.class.getResourceAsStream(filename);
-	       	if (input == null) {
-	       		throw new FileNotFoundException("config " + filename + " not found");
-	       	} */
+			/* String filename = "/config.properties";*/
+	       	//input = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
+	       	//if (input == null) {
+	       	//	throw new FileNotFoundException("config not found");
+	       	//} 
 	       	// just can't get the relative paths to work for now, using resources. just hardcoding for now.
 	       	input = new FileInputStream("/Users/cdalsass/dev/iqtransit/config.properties");
 
