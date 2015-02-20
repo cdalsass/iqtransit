@@ -7,16 +7,33 @@ import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.ClassLoader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.File;
 
 public class Config {
 
 	private static Properties properties;
+
 
 	public static Properties getProperties() {
 		return properties;
 	}
 
 	public static Properties load() throws IOException {
+		return loadInner("/config.properties", true);
+	}
+
+	public static Properties load(String filename) throws IOException {
+		if (filename != null) {
+			return loadInner(filename, false);
+		} else {
+			return loadInner("/config.properties", true);
+		}
+	}
+		
+
+	private static Properties loadInner(String filename, boolean is_resource) throws IOException {
 
 		InputStream input = null;
 		Properties prop = null;
@@ -25,16 +42,19 @@ public class Config {
 
 			prop = new Properties();
 
-			String filename = "/config.properties";
-	       	input = Config.class.getResourceAsStream(filename);
-	       	if (input == null) {
-	       		throw new FileNotFoundException("config not found");
-	       	} 
-	       	// just can't get the relative paths to work for now, using resources. just hardcoding for now.
-	       	//input = new FileInputStream("/Users/cdalsass/dev/iqtransit/config.properties");
+			if (is_resource) {
+	       		
+	       		input = Config.class.getResourceAsStream(filename);
 
-	        prop.load(input);
+			} else {
+				input = new FileInputStream(new File(filename));
+			}
 
+			if (input == null) {
+       			throw new FileNotFoundException("'" + filename + "' not found.");
+       		} 
+
+       		prop.load(input);
 	 
 	    } catch (IOException ex) {
 	        //ex.printStackTrace();

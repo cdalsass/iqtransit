@@ -23,7 +23,13 @@ public class TestConfig {
         } catch (Exception e) {
             org.junit.Assert.assertEquals("should load config", null , e.toString());
         }
-        
+
+        try {
+            Properties config = Config.load("/Users/cdalsass/dev/rtp/config.properties");
+        } catch (Exception e) {
+            org.junit.Assert.assertEquals("should load external config", null , e.toString());
+        }
+
     }
 
 }

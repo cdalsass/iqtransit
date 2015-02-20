@@ -30,6 +30,7 @@ public class MBTAPredeparture {
 
 	public MBTAPredeparture(String url) {
 		this.url = url;
+		parser = null;
 	}
 
 	public MBTAPredeparture() {
@@ -65,7 +66,7 @@ public class MBTAPredeparture {
 				
 				String line = "";
 				while ((line = rd.readLine()) != null) {
-					csv += line;
+					csv += line + System.lineSeparator();
 				}
 
 	           	EntityUtils.consume(entity1);
@@ -82,6 +83,7 @@ public class MBTAPredeparture {
 	}
 
 	public boolean parse() throws IOException {
+		System.out.println(this.csv);
 		parser = CSVParser.parse(this.csv,CSVFormat.DEFAULT);
 		return true;
 	}
@@ -132,7 +134,7 @@ public class MBTAPredeparture {
 		if (csv == null) {
 			throw new Exception("cannot call store before calling fetch");
 		}
-		
+	
 		if (parser == null) {
 			throw new Exception("cannot call store before calling parse");
 		}
@@ -143,7 +145,7 @@ public class MBTAPredeparture {
 		int rows_completed = 0; /* keep track of number of rows completed. if every row fails, throw an exception, otherwise just skip particular rows that fail */
 		int rows_attempted = 0;
 		for (CSVRecord record : parser) {
-	        
+
 	        rows_attempted++;
 
 	        try {

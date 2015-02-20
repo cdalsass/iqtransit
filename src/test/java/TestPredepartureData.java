@@ -51,8 +51,8 @@ public class TestPredepartureData {
         }
 
         MBTAPredeparture mbta = new MBTAPredeparture();
-        //mbta.fetch();
-       	org.junit.Assert.assertEquals("should be able to read in file", true, mbta.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Departures.csv"));
+        mbta.fetch();
+       	// org.junit.Assert.assertEquals("should be able to read in file", true, mbta.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Departures.csv.1"));
         
 
         String csv = mbta.getCSV();

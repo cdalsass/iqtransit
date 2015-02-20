@@ -1,4 +1,5 @@
 package com.iqtransit.geo;
+import com.iqtransit.gtfs.VehiclePosition;
 
 public class Locatable {
 	public double latitude;
