@@ -11,7 +11,7 @@ import com.google.protobuf.CodedInputStream;
 import com.iqtransit.gtfs.GtfsRealtime.*;
 import com.iqtransit.gtfs.TimeRange;
 import com.iqtransit.gtfs.Entity;
-import com.iqtransit.gtfs.ServiceAlert;
+import com.iqtransit.gtfs.TripUpdate;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,19 +36,79 @@ public class TripUpdateResult extends RealtimeResult {
 
         FeedMessage feed = b.build();
         List<FeedEntity>  entities = feed.getEntityList();
-        for (  FeedEntity entity : entities) {
-            
-            if (!entity.hasVehicle()) {
-              //continue;
+
+        for (FeedEntity entity : entities ) {
+        
+            com.iqtransit.gtfs.GtfsRealtime.TripUpdate trip_update = entity.getTripUpdate();
+          
+            if (trip_update.hasTrip()) {
+
+                TripDescriptor trip = trip_update.getTrip();
+                Integer schedule_relationship = null;
+
+                if (trip.hasScheduleRelationship()) {
+                    schedule_relationship = trip.getScheduleRelationship().getNumber();
+                } 
+
+                String route_id = null;
+                if (trip.hasRouteId()) {
+                    route_id = trip.getRouteId();
+                }
+
+                /*if (trip.hasStartDate()) {
+                    stmt.setString(7, trip.getStartDate());
+                }  else {
+                    stmt.setNull(7, Types.VARCHAR);
+                }
+
+                if (trip.hasStartTime()) {
+                    stmt.setString(8, trip.getStartTime());
+                } else {
+                    stmt.setNull(8, Types.VARCHAR);
+                }*/
+
+                String trip_id = null;
+                if (trip.hasTripId()) {
+                    trip_id = trip.getTripId();
+                } 
+
+                for (com.iqtransit.gtfs.GtfsRealtime.TripUpdate.StopTimeUpdate stu : trip_update.getStopTimeUpdateList()) {
+
+                    String stop_id = null;
+                    if (stu.hasStopId()) {
+                        stop_id = stu.getStopId();
+                    }   
+
+                    int stop_sequence = stu.hasStopSequence() ? stu.getStopSequence() : -1;
+
+                    String arrival_or_departure = null;
+                    Integer delay = null;
+
+                    if (stu.hasArrival()) {
+                        com.iqtransit.gtfs.GtfsRealtime.TripUpdate.StopTimeEvent ste = stu.getArrival();
+                        arrival_or_departure = "ARRIVAL";
+
+                        
+                        if (ste.hasDelay()) {
+                            delay = ste.getDelay();
+                        }
+                    }
+
+                    if (stu.hasDeparture()) {
+                        com.iqtransit.gtfs.GtfsRealtime.TripUpdate.StopTimeEvent ste = stu.getDeparture();
+                        arrival_or_departure = "DEPARTURE";
+
+                        if (ste.hasDelay()) {
+                            delay = ste.getDelay();
+                        }
+                    }
+
+                    TripUpdate new_update = new TripUpdate(entity.getId(), trip_id, schedule_relationship,route_id, stop_id, stop_sequence ,arrival_or_departure, delay);
+
+                    results.add(new_update);
+
+                }
             }
-            System.out.println(" vehicle = " + entity.toString());
-            com.iqtransit.gtfs.GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
-            //Position.Builder position = Position.newBuilder();
-            com.iqtransit.gtfs.GtfsRealtime.Position position = vehicle.getPosition();
-            com.iqtransit.gtfs.GtfsRealtime.TripDescriptor trip = vehicle.getTrip();
-            com.iqtransit.gtfs.GtfsRealtime.VehicleDescriptor vehicle_for_id = vehicle.getVehicle();
-            VehiclePosition vp = new VehiclePosition(vehicle_for_id.getId(), trip.getTripId(), trip.getRouteId(), position.getLatitude(), position.getLongitude(),position.getSpeed(),position.getBearing());
-            results.add(vp);
 
         }
 

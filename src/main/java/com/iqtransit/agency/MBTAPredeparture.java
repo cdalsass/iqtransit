@@ -83,7 +83,7 @@ public class MBTAPredeparture {
 	}
 
 	public boolean parse() throws IOException {
-		System.out.println(this.csv);
+		//System.out.println(this.csv);
 		parser = CSVParser.parse(this.csv,CSVFormat.DEFAULT);
 		return true;
 	}
