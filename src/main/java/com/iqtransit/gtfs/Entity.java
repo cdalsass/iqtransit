@@ -7,12 +7,13 @@ package com.iqtransit.gtfs;
 public class Entity {
 	public String agency_id;
 	public String route_id;
-	public int route_type;
+	public Integer route_type;
+	public String stop_id;
 
 	public void Entity() {
 		agency_id = null;
 		route_id = null;
-		route_type = 0;
+		route_type = null;
 	}	
 
 	public void Entity(String agency_id, String route_id, int route_type) {

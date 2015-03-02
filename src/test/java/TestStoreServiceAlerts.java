@@ -65,12 +65,7 @@ public class TestStoreServiceAlerts {
             
             //System.out.println(realtimeresult.toString());   
             ServiceAlert sa = (ServiceAlert) realtimeresult;
-
-            try {        
-                org.junit.Assert.assertEquals("should be able to delete record" , true , sa.clearStore(mysql.getConn())); 
-            }  catch (SQLException e) {
-                org.junit.Assert.assertEquals("should never hit an exception " , null , e.toString()); 
-            }
+            
 
            try {    
                 org.junit.Assert.assertEquals("should be able to insert record" , true , realtimeresult.store(mysql.getConn()));   

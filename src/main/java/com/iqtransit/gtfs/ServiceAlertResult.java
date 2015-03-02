@@ -80,6 +80,9 @@ public class ServiceAlertResult extends RealtimeResult {
               if (informed_entity.hasRouteType()) {
                   new_informed_entity.route_type = informed_entity.getRouteType();
               }
+              if (informed_entity.hasStopId()) {
+                  new_informed_entity.stop_id = informed_entity.getStopId();
+              }
             
               my_informed_entities.add(new_informed_entity);
         }

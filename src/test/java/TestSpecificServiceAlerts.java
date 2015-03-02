@@ -51,7 +51,31 @@ public class TestSpecificServiceAlerts {
                 org.junit.Assert.assertEquals("63154 should have 3 informed entities" , 3,  sa.informed_entities.size());
             }
 
-        }    
+        } 
+
+    }
+
+    @Test
+    public void testSpecificAlerts2() throws IOException {
+        
+        AgencyInterface mbta = new MBTAAgency();
+        RealtimeSource pq2 = new ServiceAlertSource(mbta);
+
+        RealtimeResult alerts_2015_03_02 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts_2015_03_02.pb", "gtfs-realtime");
+        System.out.println(alerts_2015_03_02.dump(pq2.getLoadedBytes()));
+        ArrayList<RealtimeEntity> list_of_results2 = alerts_2015_03_02.parse();   
+
+ //org.junit.Assert.assertEquals("test",false,true);
+        for(RealtimeEntity realtimeresult2: list_of_results2) {   
+            ServiceAlert sa = (ServiceAlert) realtimeresult2;
+
+            if ("66141".equals(sa.id))    {
+                org.junit.Assert.assertEquals("66141 should have 1 informed_entities" , 1,  sa.informed_entities.size());
+                org.junit.Assert.assertEquals("66141 should have null for route_id (because it's empty)" , null,  sa.informed_entities.get(0).route_id);
+                org.junit.Assert.assertEquals("66141 should have null for route_type (because it's empty in feed)" , null,  sa.informed_entities.get(0).route_type);
+            }
+        }   
+
     }
 
 }
