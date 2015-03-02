@@ -83,27 +83,40 @@ public class TripUpdateResult extends RealtimeResult {
 
                     String arrival_or_departure = null;
                     Integer delay = null;
+                    Long arrive_or_depart_time = null;
 
                     if (stu.hasArrival()) {
                         com.iqtransit.gtfs.GtfsRealtime.TripUpdate.StopTimeEvent ste = stu.getArrival();
-                        arrival_or_departure = "ARRIVAL";
+                        arrival_or_departure = "A";
 
                         
                         if (ste.hasDelay()) {
                             delay = ste.getDelay();
                         }
+
+                        if (ste.hasTime()) {
+                            arrive_or_depart_time = ste.getTime();
+                        }
+
                     }
+                    
 
                     if (stu.hasDeparture()) {
                         com.iqtransit.gtfs.GtfsRealtime.TripUpdate.StopTimeEvent ste = stu.getDeparture();
-                        arrival_or_departure = "DEPARTURE";
+                        arrival_or_departure = "D";
 
                         if (ste.hasDelay()) {
                             delay = ste.getDelay();
                         }
+
+
+                        if (ste.hasTime()) {
+                            arrive_or_depart_time = ste.getTime();
+                        }
+
                     }
 
-                    TripUpdate new_update = new TripUpdate(entity.getId(), trip_id, schedule_relationship,route_id, stop_id, stop_sequence ,arrival_or_departure, delay);
+                    TripUpdate new_update = new TripUpdate(entity.getId(), trip_id, schedule_relationship,route_id, stop_id, stop_sequence ,arrival_or_departure, delay, arrive_or_depart_time);
 
                     results.add(new_update);
 
