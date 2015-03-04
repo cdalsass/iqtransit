@@ -25,7 +25,8 @@ public class ServiceAlert extends RealtimeEntity {
 
 	public int cause;
 	public int effect;
-  public String id;
+  public String alert_id;
+  public Integer id;
   public String description_text;
   public String header_text; 
 
@@ -95,15 +96,85 @@ Yileds this:
 +-----+----------+-----------+---------------------+----------+------------+---------+
 | id  | alert_id | agency_id | created             | route_id | route_type | stop_id |
 +-----+----------+-----------+---------------------+----------+------------+---------+
-| 756 |    66141 | 1         | 2015-03-02 10:28:49 | NULL     | 0          | 70208   |
+| 756 |    66141 | 1         | 2015-03-02 10:28:49 | NULL     | NULL       | 70208   |
 +-----+----------+-----------+---------------------+----------+------------+---------+
 
-*/
 
-    public ServiceAlert(String id, int cause,  int effect, String description_text, String header_text, ArrayList<TimeRange> active_periods, ArrayList<Entity> informed_entities) {
+And yields this:
+
+              id: 623
+        alert_id: 26578
+         created: 2015-03-02 10:08:03
+           cause: 10
+          effect: 9
+description_text: The Church St @ Lexington St (layover) bus stop is temporarily closed due to construction.
+
+Beginning Monday, April 14, 2014, the Church Street @ Lexington Street stop is temporarily closed due to construction. Customers should please travel west, turn right at Lexington Street, and travel north to the nearest accessible location on Lexington Street @ Church Street.
+     header_text: Church St @ Lexington St moved
+
+
+*/
+  
+    /* instantiate a service alert from a SQL result set. Assumes that you have not joined against any sub-tables, but that
+    you don't want to query database a second time for main table data */
+    
+    public ServiceAlert(java.sql.ResultSet main_table_result, Connection conn) throws SQLException {
+
+        this.cause = main_table_result.getInt("cause");
+        this.effect = main_table_result.getInt("effect");
+        this.id = main_table_result.getInt("id");
+        this.alert_id =  main_table_result.getString("alert_id");
+        this.description_text = main_table_result.getString("description_text");
+        this.header_text = main_table_result.getString("header_text");
+
+        this.informed_entities = new ArrayList<Entity>();
+        this.active_periods = new ArrayList<TimeRange>();
+        
+        String sql = "SELECT * FROM service_alert_informed_entities where id = ?";
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, this.id);
+
+        ResultSet results = stmt.executeQuery();
+
+        while (results.next())  {
+
+            com.iqtransit.gtfs.Entity new_entity = new com.iqtransit.gtfs.Entity();
+            new_entity.agency_id = results.getString("agency_id");
+            new_entity.route_id = results.getString("route_id");
+            new_entity.route_type = results.getInt("route_type");
+            new_entity.stop_id = results.getString("stop_id");
+            this.informed_entities.add(new_entity);
+        }
+
+        stmt.close();
+
+        // very similar code above!
+
+        String sql2 = "SELECT * FROM service_alert_active_periods where id = ?";
+
+        PreparedStatement stmt2 = conn.prepareStatement(sql2);
+        stmt2.setInt(1, this.id);
+
+        ResultSet results2 = stmt2.executeQuery();
+
+        while (results2.next())  {
+
+            com.iqtransit.gtfs.TimeRange new_entity2 = new com.iqtransit.gtfs.TimeRange();
+            new_entity2.start = results2.getLong("start");
+            new_entity2.end = results2.getLong("end");
+            this.active_periods.add(new_entity2);
+        }
+
+        stmt.close();
+
+      
+    }
+
+    public ServiceAlert(String alert_id, int cause,  int effect, String description_text, String header_text, ArrayList<TimeRange> active_periods, ArrayList<Entity> informed_entities) {
         this.cause = cause;
         this.effect = effect;
-        this.id = id;
+        this.alert_id = alert_id;
         this.description_text = description_text;
         this.header_text = header_text;
         this.active_periods = active_periods;
@@ -119,7 +190,7 @@ Yileds this:
       String query = "INSERT INTO service_alert (id, alert_id, created, cause, effect, header_text, description_text) VALUES (null, ?, now(),?,?,?,?)";
 
       PreparedStatement preparedStmt = conn.prepareStatement(query);
-      preparedStmt.setString (1, this.id);
+      preparedStmt.setString (1, this.alert_id);
       preparedStmt.setInt (2, this.cause);
       preparedStmt.setInt (3, this.effect);
       preparedStmt.setString (5, this.header_text);
@@ -144,7 +215,7 @@ Yileds this:
         query = "INSERT INTO service_alert_informed_entities (id, alert_id, agency_id, route_id, route_type, stop_id, created) VALUES (?,?,?,?,?,?,now())";
         PreparedStatement preparedStmt2 = conn.prepareStatement(query);
         preparedStmt2.setInt (1, last_id);
-        preparedStmt2.setString (2, this.id);
+        preparedStmt2.setString (2, this.alert_id);
         preparedStmt2.setString (3, informed_entity.agency_id);
         preparedStmt2.setString (4, informed_entity.route_id);
         
@@ -162,7 +233,7 @@ Yileds this:
         query = "INSERT INTO service_alert_active_periods (id, alert_id, start, end, created) VALUES (?,?,?,?,now())";
         PreparedStatement preparedStmt3 = conn.prepareStatement(query);
         preparedStmt3.setInt (1, last_id);
-        preparedStmt3.setString (2, this.id);
+        preparedStmt3.setString (2, this.alert_id);
         preparedStmt3.setDouble (3, range.start);
         if (range.end != null) {
           preparedStmt3.setDouble (4, range.end);

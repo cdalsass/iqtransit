@@ -3,7 +3,7 @@
 
 import static org.junit.Assert.assertEquals;
 import com.iqtransit.server.LocatableList;
-import com.iqtransit.geo.JSONFormatter;
+import com.iqtransit.misc.JSONFormatter;
 import com.iqtransit.geo.Locatable;
 import com.iqtransit.gtfs.VehiclePosition;
 import org.junit.Test;
