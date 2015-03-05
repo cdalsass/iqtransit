@@ -45,7 +45,7 @@ public class TestServiceAlert {
             Statement stmt = conn.createStatement();
                 //Code to read from database
             ResultSet results = stmt.executeQuery(
-                    "SELECT * FROM service_alert where id = 4818");
+                    "SELECT * FROM service_alert where id in ( 4818, 903 ) ");
             while (results.next()) {
 
                 String s = results.getString("alert_id");
@@ -53,12 +53,18 @@ public class TestServiceAlert {
                 //out.println(js.format(results));
                 //out.println(s);
                 //out.println(s);
-                ServiceAlert a = new ServiceAlert(results, conn);
-                org.junit.Assert.assertEquals("alert id should be 67258", "67258" , a.alert_id);
-                org.junit.Assert.assertEquals("header text should contain Route on 7th char", 6 , a.header_text.indexOf("Route") );
-                org.junit.Assert.assertEquals("description text is null", null , a.description_text );
-                org.junit.Assert.assertEquals("should be one informed entity", 1, a.informed_entities.size());
-                org.junit.Assert.assertEquals("should be one active period", 1, a.active_periods.size());
+                if (results.getString("id").equals("4818")) {
+                    ServiceAlert a = new ServiceAlert(results, conn);
+                    org.junit.Assert.assertEquals("alert id should be 67258", "67258" , a.alert_id);
+                    org.junit.Assert.assertEquals("header text should contain Route on 7th char", 6 , a.header_text.indexOf("Route") );
+                    org.junit.Assert.assertEquals("description text is null", null , a.description_text );
+                    org.junit.Assert.assertEquals("should be one informed entity", 1, a.informed_entities.size());
+                    org.junit.Assert.assertEquals("should be one active period", 1, a.active_periods.size());
+                    
+                } else if (results.getString("id").equals("903")) {
+                    ServiceAlert a = new ServiceAlert(results, conn);
+                    org.junit.Assert.assertEquals("should be one informed entity", 1, a.informed_entities.size());
+                }
             }
         } catch (SQLException e) {
             org.junit.Assert.assertEquals("should never hit exception", null , e.toString());

@@ -130,6 +130,7 @@ Beginning Monday, April 14, 2014, the Church Street @ Lexington Street stop is t
         this.informed_entities = new ArrayList<Entity>();
         this.active_periods = new ArrayList<TimeRange>();
         
+        // warning very similar code found 2x. 
         String sql = "SELECT * FROM service_alert_informed_entities where id = ?";
 
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -166,7 +167,7 @@ Beginning Monday, April 14, 2014, the Church Street @ Lexington Street stop is t
             this.active_periods.add(new_entity2);
         }
 
-        stmt.close();
+        stmt2.close();
 
       
     }
