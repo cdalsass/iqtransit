@@ -1,5 +1,5 @@
 package com.iqtransit.gtfs;
-import com.iqtransit.gtfs.RealtimeResult;
+import com.iqtransit.common.RealtimeResult;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +15,8 @@ import com.iqtransit.gtfs.Entity;
 import com.iqtransit.gtfs.ServiceAlert;
 import java.io.IOException;
 import java.util.List;
+import com.iqtransit.common.*;
+
 
 /* 
    CREATE TABLE `trip_update` (

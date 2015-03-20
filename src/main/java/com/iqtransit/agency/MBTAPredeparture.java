@@ -114,18 +114,18 @@ public class MBTAPredeparture {
 	1424111720,"North Station","1107","Rockport",1424114400,0,,"On Time"
 
 	CREATE TABLE `pre_departure` (
-	  `id` int(11) NOT NULL AUTO_INCREMENT,
-	  `created` datetime not NULL,
-	  `timestamp` datetime not null,
-	  `origin` varchar(255) NOT NULL,
-	  `trip` varchar(255) NOT NULL,
-	  `destination` varchar(255) null,
-	  `scheduledtime` datetime not null,
-	  `lateness` int(10) null,
-	  `track` int(10) null,
-	  `status` varchar(255) not null,
-	  PRIMARY KEY (`id`)
-	);
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created` timestamp,
+  `timestamp` timestamp,
+  `origin` varchar(255) NOT NULL,
+  `trip` varchar(255) NOT NULL,
+  `destination` varchar(255) DEFAULT NULL,
+  `scheduledtime` datetime NOT NULL,
+  `lateness` int(10) DEFAULT NULL,
+  `track` int(10) DEFAULT NULL,
+  `status` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40075 DEFAULT CHARSET=utf8
 
     */
 

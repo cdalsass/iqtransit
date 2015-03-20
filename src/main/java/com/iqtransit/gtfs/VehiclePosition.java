@@ -1,5 +1,5 @@
 package com.iqtransit.gtfs;
-import com.iqtransit.gtfs.RealtimeResult;
+import com.iqtransit.common.*;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,7 +43,7 @@ public class VehiclePosition extends RealtimeEntity {
     /*
      CREATE TABLE `vehicle_position` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` datetime DEFAULT NULL,
+  `created` timestamp ,
   `vehicle_id` varchar(500) NOT NULL,
   `trip_id` varchar(255) not null,
   `route_id` varchar(500) not null,

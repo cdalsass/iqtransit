@@ -1,5 +1,5 @@
 package com.iqtransit.gtfs;
-import com.iqtransit.gtfs.RealtimeResult;
+import com.iqtransit.common.*;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

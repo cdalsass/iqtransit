@@ -1,4 +1,4 @@
-package com.iqtransit.gtfs;
+package com.iqtransit.common;
 import java.sql.SQLException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,7 +23,7 @@ public abstract class RealtimeResult {
 			try {
 	        	b.mergeFrom(in, null);
 	        } catch (IOException e) {
-	        	System.out.println("Error parsing GTFS realtime data");
+	        	System.out.println("Error parsing realtime data");
 	        }
 	        FeedMessage feed = b.build();
 	        List<FeedEntity>  entities = feed.getEntityList();

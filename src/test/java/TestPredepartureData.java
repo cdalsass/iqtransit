@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.RealtimeSource;
+import com.iqtransit.common.*;
 
 import org.junit.Test;
 import org.junit.Ignore;

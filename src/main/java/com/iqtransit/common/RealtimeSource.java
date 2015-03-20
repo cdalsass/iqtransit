@@ -1,5 +1,4 @@
-package com.iqtransit.gtfs;
-
+package com.iqtransit.common;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,8 +24,11 @@ import java.nio.file.Paths;
 
 import java.util.List;
 import com.iqtransit.agency.AgencyInterface;
+import com.iqtransit.common.RealtimeResult;
 
 public abstract class RealtimeSource {
+
+		protected String format;
 
 		protected class PredictionData {
 
@@ -56,7 +58,8 @@ public abstract class RealtimeSource {
  			}
  		}
 
-		public RealtimeSource(AgencyInterface agency) {
+		public RealtimeSource(AgencyInterface agency, String format) {
+			this.format = format;
 			this.agency = agency;
 		}
 	

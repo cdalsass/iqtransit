@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.RealtimeSource;
+import com.iqtransit.common.*;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -29,7 +29,7 @@ public class TestSpecificTripUpdate {
     public void testSpecificTripUpdate() throws IOException {
         
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeSource pq2 = new TripUpdateSource(mbta);
+        RealtimeSource pq2 = new TripUpdateSource(mbta,"GTFSRT");
         
         RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/TripUpdates.pb", "gtfs-realtime");
         //System.out.println(pq2.dump());;

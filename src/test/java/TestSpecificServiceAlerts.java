@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.RealtimeSource;
+import com.iqtransit.common.*;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -29,7 +29,7 @@ public class TestSpecificServiceAlerts {
     public void testSpecificAlerts() throws IOException {
         
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeSource pq2 = new ServiceAlertSource(mbta);
+        RealtimeSource pq2 = new ServiceAlertSource(mbta,"GTFSRT");
         
         RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb", "gtfs-realtime");
         //System.out.println(pq2.dump());;
@@ -59,7 +59,7 @@ public class TestSpecificServiceAlerts {
     public void testSpecificAlerts2() throws IOException {
         
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeSource pq2 = new ServiceAlertSource(mbta);
+        RealtimeSource pq2 = new ServiceAlertSource(mbta,"GTFSRT");
 
         RealtimeResult alerts_2015_03_02 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts_2015_03_02.pb", "gtfs-realtime");
         System.out.println(alerts_2015_03_02.dump(pq2.getLoadedBytes()));

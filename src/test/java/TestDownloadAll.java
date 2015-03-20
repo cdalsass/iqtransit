@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.RealtimeSource;
+import com.iqtransit.common.*;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -43,9 +43,9 @@ public class TestDownloadAll {
         }
 
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeSource pq1 = new VehiclePositionSource(mbta);
-        RealtimeSource pq2 = new ServiceAlertSource(mbta);
-        RealtimeSource pq3 = new TripUpdateSource(mbta);
+        RealtimeSource pq1 = new VehiclePositionSource(mbta, "GTFSRT");
+        RealtimeSource pq2 = new ServiceAlertSource(mbta,"GTFSRT");
+        RealtimeSource pq3 = new TripUpdateSource(mbta,"GTFSRT");
         
         RealtimeSource queries[]  = new RealtimeSource[] { pq1, pq2, pq3 };
 

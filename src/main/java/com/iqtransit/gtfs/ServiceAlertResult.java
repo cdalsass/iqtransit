@@ -6,6 +6,8 @@ import com.iqtransit.gtfs.GtfsRealtime.*;
 import com.iqtransit.gtfs.TimeRange;
 import com.iqtransit.gtfs.Entity;
 import com.iqtransit.gtfs.ServiceAlert;
+import com.iqtransit.common.*;
+
 import java.io.IOException;
 import java.util.List;
 

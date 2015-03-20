@@ -1,9 +1,6 @@
-package com.iqtransit.gtfs;
-import com.iqtransit.gtfs.RealtimeSource;
+package com.iqtransit.common;
 import com.iqtransit.agency.AgencyInterface;
 import java.util.ArrayList;
-import com.google.protobuf.CodedInputStream;
-import com.iqtransit.gtfs.GtfsRealtime.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,8 +8,8 @@ import java.util.List;
 
 public class VehiclePositionSource extends RealtimeSource {
 	
-	public VehiclePositionSource(AgencyInterface agency) {
-		super(agency);
+	public VehiclePositionSource(AgencyInterface agency, String format) {
+		super(agency, format);
 	}
 
 	public String GetDownloadUrl(String line, String format) {
@@ -21,7 +18,11 @@ public class VehiclePositionSource extends RealtimeSource {
 
 	// this associates the corrolary results class with the source. 
 	public RealtimeResult Result() {
-		return new VehiclePositionResult(this);
+		if (this.format == "GTFSRT") {
+			return new com.iqtransit.gtfs.VehiclePositionResult(this);
+		} else {
+			throw new IllegalArgumentException("invalid format '" + this.format + "'");
+		}
 	}
 
 }

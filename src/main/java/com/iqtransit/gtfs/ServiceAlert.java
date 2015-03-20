@@ -1,6 +1,6 @@
 package com.iqtransit.gtfs;
 import com.iqtransit.db.MySQL;
-import com.iqtransit.gtfs.RealtimeResult;
+import com.iqtransit.common.RealtimeResult;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +16,8 @@ import com.iqtransit.gtfs.GtfsRealtime.*;
 import com.iqtransit.gtfs.TimeRange;
 import com.iqtransit.gtfs.Entity;
 import com.iqtransit.gtfs.ServiceAlert;
+import com.iqtransit.common.RealtimeEntity;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -34,35 +36,36 @@ public class ServiceAlert extends RealtimeEntity {
   public ArrayList<Entity> informed_entities = new ArrayList<Entity>();
 
 /*
-    CREATE TABLE `service_alert` (
-    id int(11) auto_increment,
+   CREATE TABLE `service_alert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `alert_id` int(11) NOT NULL,
-  `created` datetime DEFAULT NULL,
+  `created` timestamp ,
   `cause` int(11) NOT NULL,
   `effect` int(11) NOT NULL,
-  `description_text` text NULL,
-  `header_text` text null,
-   PRIMARY KEY (`id`),
-   UNIQUE KEY `idx23453` (`id`)
-);
+  `description_text` text,
+  `header_text` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx23453` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=59598 DEFAULT CHARSET=utf8
 
-CREATE TABLE service_alert_active_periods (
-  id int(11) not null,
-  alert_id int(11) NOT NULL,
-  `created` datetime DEFAULT NULL,
-  start double null,
-  end double null
-);
+CREATE TABLE `service_alert_active_periods` (
+  `id` int(11) NOT NULL,
+  `alert_id` int(11) NOT NULL,
+  `created` timestamp ,
+  `start` double DEFAULT NULL,
+  `end` double DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `service_alert_informed_entities` (
-  id int(11) not null,
+  `id` int(11) NOT NULL,
   `alert_id` int(11) NOT NULL,
-  `agency_id` varchar(255) not null,
-  `created` datetime DEFAULT NULL,
-  `route_id` varchar(255)  null, # this can be null
-  `route_type` varchar(255) null,
-  `stop_id` varchar(255)  null
-);
+  `agency_id` varchar(255) NOT NULL,
+  `created` timestamp ,
+  `route_id` varchar(255) DEFAULT NULL,
+  `route_type` varchar(255) DEFAULT NULL,
+  `stop_id` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
 
 id: "66141"
 alert {
@@ -197,6 +200,10 @@ Beginning Monday, April 14, 2014, the Church Street @ Lexington Street stop is t
       preparedStmt.setString (5, this.header_text);
       preparedStmt.setString (4, this.description_text);
       preparedStmt.execute();
+      Statement stmt3 = null;
+      ResultSet rs3 = null;
+      PreparedStatement preparedStmt3 = null;
+    PreparedStatement preparedStmt2 = null;
 
       /*  I'm going to generate my own id instead of using theirs for canonicity.
           This means the same alert can be saved multiple times. Is that OK?
@@ -205,46 +212,87 @@ Beginning Monday, April 14, 2014, the Church Street @ Lexington Street stop is t
           to know which alerts are being pushed out *now* instead of having to calculate
           which alerts should be shown at any given moment.       
       */
+      try {
+          stmt3 = conn.createStatement();
+          rs3 = stmt3.executeQuery("select last_insert_id() as last_id from service_alert");
+          rs3.next();
+          int last_id = rs3.getInt("last_id");
 
-      Statement stmt3 = conn.createStatement();
-      ResultSet rs3 = stmt3.executeQuery("select last_insert_id() as last_id from service_alert");
-      rs3.next();
-      int last_id = rs3.getInt("last_id");
+          for (TimeRange range: this.active_periods) {
+            query = "INSERT INTO service_alert_active_periods (id, alert_id, start, end, created) VALUES (?,?,?,?,now())";
+            preparedStmt3 = conn.prepareStatement(query);
+            preparedStmt3.setInt (1, last_id);
+            preparedStmt3.setString (2, this.alert_id);
+            preparedStmt3.setDouble (3, range.start);
+            if (range.end != null) {
+              preparedStmt3.setDouble (4, range.end);
+            } else {
+              preparedStmt3.setNull(4,Types.NULL);
+            }
+            preparedStmt3.execute();
+          }
+            
+          /* inserting these last because elsewhere I query informed_entities first and I want avoid errors with missing records */
 
+          for (Entity informed_entity: this.informed_entities) {
+            query = "INSERT INTO service_alert_informed_entities (id, alert_id, agency_id, route_id, route_type, stop_id, created) VALUES (?,?,?,?,?,?,now())";
+            preparedStmt2 = conn.prepareStatement(query);
+            preparedStmt2.setInt (1, last_id);
+            preparedStmt2.setString (2, this.alert_id);
+            preparedStmt2.setString (3, informed_entity.agency_id);
+            preparedStmt2.setString (4, informed_entity.route_id);
+            
+            if (informed_entity.route_type != null) {
+              preparedStmt2.setInt (5, informed_entity.route_type);
+            } else {
+              preparedStmt2.setNull(5,Types.NULL);
+            }
 
-      for (Entity informed_entity: this.informed_entities) {
-        query = "INSERT INTO service_alert_informed_entities (id, alert_id, agency_id, route_id, route_type, stop_id, created) VALUES (?,?,?,?,?,?,now())";
-        PreparedStatement preparedStmt2 = conn.prepareStatement(query);
-        preparedStmt2.setInt (1, last_id);
-        preparedStmt2.setString (2, this.alert_id);
-        preparedStmt2.setString (3, informed_entity.agency_id);
-        preparedStmt2.setString (4, informed_entity.route_id);
-        
-        if (informed_entity.route_type != null) {
-          preparedStmt2.setInt (5, informed_entity.route_type);
-        } else {
-          preparedStmt2.setNull(5,Types.NULL);
+            preparedStmt2.setString (6, informed_entity.stop_id);
+            preparedStmt2.execute();
+          }
+      } catch ( SQLException e2){
+
+        if (preparedStmt3 != null) {
+          try {
+            preparedStmt3.close();
+          } catch (final SQLException e) {
+                        /* No Op */
+          }
         }
 
-        preparedStmt2.setString (6, informed_entity.stop_id);
-        preparedStmt2.execute();
-      }
-
-      for (TimeRange range: this.active_periods) {
-        query = "INSERT INTO service_alert_active_periods (id, alert_id, start, end, created) VALUES (?,?,?,?,now())";
-        PreparedStatement preparedStmt3 = conn.prepareStatement(query);
-        preparedStmt3.setInt (1, last_id);
-        preparedStmt3.setString (2, this.alert_id);
-        preparedStmt3.setDouble (3, range.start);
-        if (range.end != null) {
-          preparedStmt3.setDouble (4, range.end);
-        } else {
-          preparedStmt3.setNull(4,Types.NULL);
+        if (preparedStmt2 != null) {
+          try {
+            preparedStmt2.close();
+          } catch (final SQLException e6) {
+                        /* No Op */
+          }
         }
-        preparedStmt3.execute();
-      }
-          
 
+        if (preparedStmt != null) {
+          try {
+            preparedStmt.close();
+          } catch (final SQLException e3) {
+                        /* No Op */
+          }
+        }
+
+        if (stmt3 != null) {
+          try {
+            stmt3.close();
+          } catch (final SQLException e4) {
+                        /* No Op */
+          }
+        }
+        if (rs3 != null) {
+          try {
+            rs3.close();
+          } catch (final SQLException e5) {
+                        /* No Op */
+          }
+        }
+      }
+      
         
         // tried returning false if nothing done, but this broke my tests.  
         return true; 

@@ -2,7 +2,7 @@
 // java -cp lib/junit.jar:.:lib/hamcrest-core-1.3.jar:build/libs/iqtransit.jar  org.junit.runner.JUnitCore LocatableItemListTest
 
 import static org.junit.Assert.assertEquals;
-import com.iqtransit.gtfs.RealtimeSource;
+import com.iqtransit.common.*;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -13,6 +13,7 @@ import com.iqtransit.gtfs.*;
 import com.iqtransit.geo.*;
 import com.iqtransit.agency.*;
 import com.iqtransit.db.MySQL;
+
 import com.iqtransit.misc.Config;
 
 import java.util.Date;
@@ -37,7 +38,7 @@ public class TestStoreServiceAlerts {
 
 
         AgencyInterface mbta = new MBTAAgency();
-        RealtimeSource pq2 = new ServiceAlertSource(mbta);
+        RealtimeSource pq2 = new ServiceAlertSource(mbta, "GTFSRT");
        
         MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + prop.getProperty("database") + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
         
