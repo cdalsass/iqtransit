@@ -66,7 +66,9 @@ public class TestDownloadAll {
             RealtimeResult rtr = null;
             try {
                 rtr = source.fetch(null, "gtfs-realtime", null);
+                // DUMP SOURCE DATA LIKE THIS System.out.println(rtr.dump(source.getLoadedBytes()));;
             } catch (Exception e) {
+                org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
                 org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
             }
 
@@ -86,6 +88,8 @@ public class TestDownloadAll {
             //System.out.println("retrieved element: " + item);
             }
         }
+
+        // DO THIS TO STOP HERE AND VIEW OUTPUT IN STDOUT org.junit.Assert.assertEquals("forced it to quit ", null , "NOT NULL");
 
         try {
             mysql.close();
