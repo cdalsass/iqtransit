@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /* includes anthing common to all GTFSRT results */
 
-public class GTFSRealtimeResult extends RealtimeResult {
+public abstract class GTFSRealtimeResult extends RealtimeResult {
 
 	public GTFSRealtimeResult(RealtimeSource rts) {
 		super(rts);
