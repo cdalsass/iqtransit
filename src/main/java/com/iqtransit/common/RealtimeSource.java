@@ -65,7 +65,7 @@ public abstract class RealtimeSource {
 	
 		public abstract String GetDownloadUrl(String line, String format);	
  
-		public RealtimeResult fetch(String line, String format, Date d) throws Exception {
+		public RealtimeResult fetch(String line, Date d) throws Exception {
 			
 			byte [] results = null; 
 			if (d == null) {
@@ -75,7 +75,7 @@ public abstract class RealtimeSource {
 
 			        CloseableHttpClient httpclient = HttpClients.createDefault();
 			        
-			        HttpGet httpGet = new HttpGet(this.GetDownloadUrl(line, format));
+			        HttpGet httpGet = new HttpGet(this.GetDownloadUrl(line, this.format));
 			        CloseableHttpResponse response = httpclient.execute(httpGet);
 			        // The underlying HTTP connection is still held by the response object
 			        // to allow the response content to be streamed directly from the network socket.
@@ -124,7 +124,7 @@ public abstract class RealtimeSource {
 			return this.Result();
 		}
 
-		public RealtimeResult loadLocalFile(String filename, String format) throws IOException {	
+		public RealtimeResult loadLocalFile(String filename) throws IOException {	
     		Path path = Paths.get(filename);
     		setBytes(Files.readAllBytes(path));
     		return Result(); 

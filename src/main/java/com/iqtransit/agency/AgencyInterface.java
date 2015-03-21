@@ -8,6 +8,6 @@ public interface AgencyInterface {
 	abstract double[] getClosedPoly(String lineid);
 	abstract String RealtimeSource(String lineid, String format);
 	abstract String VehiclePositionUrl();
-	abstract String ServiceAlertUrl();
+	abstract String ServiceAlertUrl(String format);
 	abstract String TripUpdatesUrl();
 }

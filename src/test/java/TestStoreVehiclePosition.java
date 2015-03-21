@@ -50,7 +50,7 @@ public class TestStoreVehiclePosition {
        
         RealtimeResult rtr = null;
         try {
-            rtr = source.fetch(null, "gtfs-realtime", null);
+            rtr = source.fetch(null, null);
         } catch (Exception e) {
             org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
         }

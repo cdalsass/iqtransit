@@ -1,4 +1,4 @@
-package com.iqtransit.mbtartv2;
+package com.iqtransit.mbtav2;
 import java.util.ArrayList;
 
 import com.google.protobuf.CodedInputStream;
@@ -11,16 +11,19 @@ import java.util.List;
 
 public class ServiceAlertResult extends RealtimeResult {
 	
-
 	public ServiceAlertResult(RealtimeSource rts) {
 			super(rts);
 	}
 
 	public ArrayList<RealtimeEntity> parse() {
-
+		System.out.println(this.source.getLoadedBytes());
         ArrayList<RealtimeEntity> results = new ArrayList<RealtimeEntity>();
 
         return results; 
-  }
+  	}
+
+  	public String dump(byte [] b) {
+  		return null;
+  	}
 
 }

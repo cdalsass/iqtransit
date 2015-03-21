@@ -10,16 +10,16 @@ public class ServiceAlertSource extends RealtimeSource {
 	}
 
 	public String GetDownloadUrl(String line, String format) {
-		return this.agency.ServiceAlertUrl();
+		return this.agency.ServiceAlertUrl(format);
 	}
 
 	// this associates the corrolary results class with the source. 
 	public RealtimeResult Result() throws IllegalArgumentException {
 		// eventually we'll want a factory class for this.
-		if (this.format == "GTFSRT") {
+		if (this.format.equals("GTFSRT")) {
 			return new com.iqtransit.gtfs.ServiceAlertResult(this);
-		} else if (this.format == "MBTART-V2") {
-			return new com.iqtransit.mbtartv2.ServiceAlertResult(this);
+		} else if (this.format.equals("MBTA_V2")) {
+			return new com.iqtransit.mbtav2.ServiceAlertResult(this);
 		} else {
 			throw new IllegalArgumentException("invalid format '" + this.format + "'");
 		}

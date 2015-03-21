@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import com.iqtransit.common.*;
 
-public class TripUpdateResult extends RealtimeResult {
+public class TripUpdateResult extends GTFSRealtimeResult {
 
 
     public TripUpdateResult(RealtimeSource rts) {

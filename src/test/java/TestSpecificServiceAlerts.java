@@ -31,7 +31,7 @@ public class TestSpecificServiceAlerts {
         AgencyInterface mbta = new MBTAAgency();
         RealtimeSource pq2 = new ServiceAlertSource(mbta,"GTFSRT");
         
-        RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb", "gtfs-realtime");
+        RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts.pb");
         //System.out.println(pq2.dump());;
 
         org.junit.Assert.assertEquals("should have loaded some bytes", true, pq2.getLoadedBytes().length > 1000 );
@@ -61,7 +61,7 @@ public class TestSpecificServiceAlerts {
         AgencyInterface mbta = new MBTAAgency();
         RealtimeSource pq2 = new ServiceAlertSource(mbta,"GTFSRT");
 
-        RealtimeResult alerts_2015_03_02 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts_2015_03_02.pb", "gtfs-realtime");
+        RealtimeResult alerts_2015_03_02 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/Alerts_2015_03_02.pb");
         System.out.println(alerts_2015_03_02.dump(pq2.getLoadedBytes()));
         ArrayList<RealtimeEntity> list_of_results2 = alerts_2015_03_02.parse();   
 

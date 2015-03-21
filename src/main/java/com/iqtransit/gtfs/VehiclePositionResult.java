@@ -16,7 +16,7 @@ import com.iqtransit.gtfs.ServiceAlert;
 import java.io.IOException;
 import java.util.List;
 
-public class VehiclePositionResult extends RealtimeResult {
+public class VehiclePositionResult extends GTFSRealtimeResult {
 
     public VehiclePositionResult(RealtimeSource rts) {
         super(rts);

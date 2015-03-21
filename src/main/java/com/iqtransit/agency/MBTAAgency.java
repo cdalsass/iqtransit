@@ -1,6 +1,18 @@
 package com.iqtransit.agency;
+import java.util.Properties; 
+import java.lang.IllegalArgumentException;
 
 public class MBTAAgency implements AgencyInterface {
+
+	private Properties config;
+
+	public MBTAAgency(Properties config) {
+		this.config = config;
+	}
+
+	// this is possible, but you have to make sure you don't need config.
+	public MBTAAgency() {
+	}
 
 	private int LineNumber(String line_name) {
 
@@ -56,8 +68,26 @@ public class MBTAAgency implements AgencyInterface {
 		return  "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb";
 	}
 
-	public String ServiceAlertUrl() {
-		return "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb";
+
+	public String ServiceAlertUrl(String format) throws IllegalArgumentException {
+		if (format.equals("GTFSRT")) {
+			return "http://developer.mbta.com/lib/GTRTFS/Alerts/Alerts.pb";
+		} else if (format.equals("MBTA_V2")) {
+
+			String api_key = null;
+			try {
+				api_key = config.getProperty("api_key");
+			} catch (Exception e) {
+				System.out.println("Error: api_key not defined in properties");
+				throw e; 
+			}
+			
+			return "http://realtime.mbta.com/developer/api/v2/alerts?api_key=" + config.getProperty("api_key") + "&format=json";
+			 
+		} else {
+			throw new IllegalArgumentException();
+		}
+		
 	}
 
 	public String TripUpdatesUrl() {
@@ -65,10 +95,10 @@ public class MBTAAgency implements AgencyInterface {
 	}
 
 	public String RealtimeSource(String line_name, String format) {
-		if (format == "json") {
+		if (format.equals("json")) {
 			int rail_id = LineNumber(line_name);
 			return "http://developer.mbta.com/lib/RTCR/RailLine_" + rail_id + ".json";
-		} else if (format == "gtfs-realtime") {
+		} else if (format.equals("gtfs-realtime")) {
 			return "http://developer.mbta.com/lib/GTRTFS/Alerts/VehiclePositions.pb";
 		} else {
 			throw new Error("invalid format " + format);

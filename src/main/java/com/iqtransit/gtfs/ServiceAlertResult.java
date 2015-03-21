@@ -11,7 +11,7 @@ import com.iqtransit.common.*;
 import java.io.IOException;
 import java.util.List;
 
-public class ServiceAlertResult extends RealtimeResult {
+public class ServiceAlertResult extends GTFSRealtimeResult {
 	
 
 	public ServiceAlertResult(RealtimeSource rts) {

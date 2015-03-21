@@ -51,7 +51,7 @@ public class TestStoreTripUpdate {
 
         RealtimeResult pq3 = null;
         try {
-            pq3 = pq2.fetch(null, "gtfs-realtime", null);
+            pq3 = pq2.fetch(null, null);
         } catch (Exception e) {
             org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
         }

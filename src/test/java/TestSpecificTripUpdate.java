@@ -31,7 +31,7 @@ public class TestSpecificTripUpdate {
         AgencyInterface mbta = new MBTAAgency();
         RealtimeSource pq2 = new TripUpdateSource(mbta,"GTFSRT");
         
-        RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/TripUpdates.pb", "gtfs-realtime");
+        RealtimeResult pq3 = pq2.loadLocalFile("/Users/cdalsass/dev/iqtransit/src/test/test_data/TripUpdates.pb");
         //System.out.println(pq2.dump());;
        System.out.println(pq3.dump(pq2.getLoadedBytes()));
 

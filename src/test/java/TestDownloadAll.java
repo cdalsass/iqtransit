@@ -42,12 +42,13 @@ public class TestDownloadAll {
             org.junit.Assert.assertEquals("should read config file", null , e.toString());
         }
 
-        AgencyInterface mbta = new MBTAAgency();
+        AgencyInterface mbta = new MBTAAgency(prop);
         RealtimeSource pq1 = new VehiclePositionSource(mbta, "GTFSRT");
         RealtimeSource pq2 = new ServiceAlertSource(mbta,"GTFSRT");
         RealtimeSource pq3 = new TripUpdateSource(mbta,"GTFSRT");
+        RealtimeSource pq4 = new ServiceAlertSource(mbta,"MBTA_V2");
         
-        RealtimeSource queries[]  = new RealtimeSource[] { pq1, pq2, pq3 };
+        RealtimeSource queries[]  = new RealtimeSource[] { pq4 };
 
         MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + prop.getProperty("database") + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
         
@@ -60,18 +61,17 @@ public class TestDownloadAll {
             System.out.println("unable to connect to database " + e.toString()); 
         }
         
-
         for (RealtimeSource source : queries) {
-            
             RealtimeResult rtr = null;
+
             try {
-                rtr = source.fetch(null, "gtfs-realtime", null);
-                // DUMP SOURCE DATA LIKE THIS System.out.println(rtr.dump(source.getLoadedBytes()));;
+                rtr = source.fetch(null, null);
+                System.out.println(rtr.dump(source.getLoadedBytes()));
             } catch (Exception e) {
-                org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
                 org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
             }
 
+            
             org.junit.Assert.assertEquals("should have loaded some bytes", true, source.getLoadedBytes().length > 0 );
 
             ArrayList<RealtimeEntity> list_of_results = rtr.parse();  
