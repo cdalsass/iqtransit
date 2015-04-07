@@ -9,7 +9,7 @@ public abstract class RealtimeResult {
 	public RealtimeResult(RealtimeSource rts) {
 		source = rts;
 	}
-
+	
 	public abstract ArrayList<RealtimeEntity> parse();
 
 	public abstract String dump(byte [] b);

@@ -30,6 +30,16 @@ public abstract class RealtimeSource {
 
 		protected String format;
 
+		public RealtimeSource(AgencyInterface agency, String format) {
+			this.format = format;
+			this.agency = agency;
+		}
+
+
+		public RealtimeSource() {
+			// just for testing. 
+		}
+
 		protected class PredictionData {
 
 			protected boolean was_parsed;
@@ -58,10 +68,6 @@ public abstract class RealtimeSource {
  			}
  		}
 
-		public RealtimeSource(AgencyInterface agency, String format) {
-			this.format = format;
-			this.agency = agency;
-		}
 	
 		public abstract String GetDownloadUrl(String line, String format);	
  
@@ -115,7 +121,7 @@ public abstract class RealtimeSource {
 			return Result(); 
 		}
 
-		private void setBytes(byte [] bytes) {
+		public void setBytes(byte [] bytes) {
 			last_prediction = new PredictionData(bytes);
 		}
 

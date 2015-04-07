@@ -9,6 +9,11 @@ public class ServiceAlertSource extends RealtimeSource {
 			super(agency, format);
 	}
 
+	// just for testing withouth alot of dependencies.
+	public ServiceAlertSource() {
+			super();
+	}
+
 	public String GetDownloadUrl(String line, String format) {
 		return this.agency.ServiceAlertUrl(format);
 	}

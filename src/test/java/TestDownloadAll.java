@@ -67,11 +67,11 @@ public class TestDownloadAll {
             try {
                 rtr = source.fetch(null, null);
                 System.out.println(rtr.dump(source.getLoadedBytes()));
+                org.junit.Assert.assertEquals("should have 1k bytes (most of the time. WARNING: this may fail sometimes)", true, rtr.dump(source.getLoadedBytes()).length() > 1000 );
             } catch (Exception e) {
                 org.junit.Assert.assertEquals("fetch failed ", null , e.toString());
             }
 
-            
             org.junit.Assert.assertEquals("should have loaded some bytes", true, source.getLoadedBytes().length > 0 );
 
             ArrayList<RealtimeEntity> list_of_results = rtr.parse();  
