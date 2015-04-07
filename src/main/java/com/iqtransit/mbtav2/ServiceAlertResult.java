@@ -30,7 +30,13 @@ public class ServiceAlertResult extends RealtimeResult {
 
         	for ( JsonElement a : result.getAsJsonArray("alerts"))  {
         		JsonObject jso = (JsonObject) a; /* cast this down */
-        		System.out.println("HERE IS THE ID" + jso.get("alert_id").getAsInt());
+        		 
+            ArrayList<com.iqtransit.gtfs.Entity> my_informed_entities = new ArrayList<com.iqtransit.gtfs.Entity>();
+            ArrayList<com.iqtransit.gtfs.TimeRange> internal_active_period_list = new ArrayList<com.iqtransit.gtfs.TimeRange>();
+            
+            com.iqtransit.gtfs.ServiceAlert service_alert = new com.iqtransit.gtfs.ServiceAlert( jso.get("alert_id").getAsString(), /* jso.get("cause")*/ 0, /*jso.get("effect") */ 0 /* temporarily hardcoding. not sure how to make these into numbers, and maybe we don't even need them */, jso.get("header_text").getAsString(), jso.get("description_text").getAsString(), internal_active_period_list, my_informed_entities);
+
+            results.add(service_alert);
         	}
 
 
