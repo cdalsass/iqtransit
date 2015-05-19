@@ -37,14 +37,14 @@ public class LocatableListTest {
 
     }
 
-    @Test
+   /* @Test
     public void testLocationFunctions() {
 
         Locatable from = new Locatable("from",42.520536, -71.507640);
         Locatable to = new Locatable("to",42.501555, -71.476741);
         org.junit.Assert.assertEquals("distance should be about 2 miles", true, from.distanceTo(to) > 1.5 &&  from.distanceTo(to) < 2.5);
 
-    }
+    } */
 
     @Test
     public void testDisplay() {

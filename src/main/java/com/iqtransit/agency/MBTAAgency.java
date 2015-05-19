@@ -1,17 +1,77 @@
 package com.iqtransit.agency;
 import java.util.Properties; 
 import java.lang.IllegalArgumentException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Types; 
+import java.util.Date;
+import java.util.TimeZone;
+import com.iqtransit.gtfs.GtfsDate;
 
 public class MBTAAgency implements AgencyInterface {
 
 	private Properties config;
+	private Connection conn; 
+	
+	public TimeZone getTimeZone() {
+		return TimeZone.getTimeZone("America/New_York");
+	}
+
+	public boolean isServiceRunningNow(String service_id, long reference_time_seconds) throws SQLException {
+		
+		if (this.conn == null) {
+			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
+		}
+
+		TimeZone tz = this.getTimeZone();
+
+		GtfsDate date = new GtfsDate();
+
+		String sql = "select exception_type from calendar_dates where service_id = ? and date = '" + date.fromUnix(reference_time_seconds,tz) + "'";	
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, service_id);
+
+
+		return true;
+	}
+
+	public String[] getServicesIdsFromShortName(String trip_short_name) throws SQLException {
+		
+		if (this.conn == null) {
+			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
+		}
+
+		ArrayList service_list = new ArrayList<String>();
+
+		String sql = "select service_id from trips where trip_short_name = ?";
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, trip_short_name);
+
+        ResultSet results = stmt.executeQuery();
+
+        while (results.next())  {
+        	service_list.add(results.getString("service_id"));
+        }
+
+		return (String[]) service_list.toArray(new String[service_list.size()]);
+	}
 
 	public MBTAAgency(Properties config) {
 		this.config = config;
 	}
 
+	public void assignConnection(Connection conn) {
+		this.conn = conn;
+	}
+
 	// this is possible, but you have to make sure you don't need config.
 	public MBTAAgency() {
+
 	}
 
 	private int LineNumber(String line_name) {
