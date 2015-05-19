@@ -73,9 +73,11 @@ public class AgencyTest {
             org.junit.Assert.assertEquals("There should be 2 services based on May 2015 GTFS. This will fail when services change and GTFS is refreshed", 2, services.length);
 
             GtfsDate d = new GtfsDate();
-             org.junit.Assert.assertEquals("GTFS Date should return properly", "20150519", d.fromUnix(1432048600 /* May 19th,2015 11AM */, agency.getTimeZone()));
-             
-            agency.isServiceRunningNow("CR-Weekday-Recovery-Providence-Dec13", 1432048600 /* May 19th,2015 11AM */ );
+            org.junit.Assert.assertEquals("GTFS Date should return properly", "20150519", d.fromUnix(1432048600 /* May 19th,2015 11AM EDST */, agency.getTimeZone()));
+
+            org.junit.Assert.assertEquals("GTFS Date should return properly", "20150518", d.fromUnix(1432011600 /* May 19th,2015 1AM EDST */, agency.getTimeZone()));
+
+            agency.isServiceRunningNow("CR-Weekday-Recovery-Providence-Dec13", 1432048600 /* May 19th,2015 11AM EDST */ );
 
 
         } catch (SQLException e) {

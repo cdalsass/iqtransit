@@ -12,17 +12,24 @@ import java.util.Date;
 import java.util.TimeZone;
 import com.iqtransit.gtfs.GtfsDate;
 
+
 public class MBTAAgency implements AgencyInterface {
 
 	private Properties config;
 	private Connection conn; 
 	
+
+
 	public TimeZone getTimeZone() {
 		return TimeZone.getTimeZone("America/New_York");
 	}
 
 	public boolean isServiceRunningNow(String service_id, long reference_time_seconds) throws SQLException {
-		
+
+		/* constants belong elsewhere */
+		 final int SERVICE_REMOVED = 2;
+		 final int SERVICE_ADDED = 1;
+
 		if (this.conn == null) {
 			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
 		}
@@ -32,9 +39,27 @@ public class MBTAAgency implements AgencyInterface {
 		GtfsDate date = new GtfsDate();
 
 		String sql = "select exception_type from calendar_dates where service_id = ? and date = '" + date.fromUnix(reference_time_seconds,tz) + "'";	
+
 		PreparedStatement stmt = conn.prepareStatement(sql);
+        
         stmt.setString(1, service_id);
 
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	System.out.println("returned no records from results set");
+        } else {
+        	if (results.getInt("exception_type") == SERVICE_REMOVED) {
+        		return false; 
+	        } else if (results.getInt("exception_type") == SERVICE_ADDED) {
+	        	// don't need to proceed any further. 
+	        	return true; 
+	        } 
+        }
+
+        // we're still here, so dig in a little deeper into calendar.txt. find out if this is running today due to possible schedule change.
+
+        results.close();
 
 		return true;
 	}
@@ -57,6 +82,8 @@ public class MBTAAgency implements AgencyInterface {
         while (results.next())  {
         	service_list.add(results.getString("service_id"));
         }
+        
+        results.close();
 
 		return (String[]) service_list.toArray(new String[service_list.size()]);
 	}
