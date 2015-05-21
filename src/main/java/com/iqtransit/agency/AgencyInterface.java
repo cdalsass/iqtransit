@@ -16,6 +16,10 @@ public interface AgencyInterface {
 	abstract String TripUpdatesUrl();
 	abstract String[] getServicesIdsFromShortName(String short_trip_name) throws SQLException;
 	abstract void assignConnection(java.sql.Connection conn);
-	abstract boolean isServiceRunningNow(String service, long d) throws SQLException ;
+	abstract int isServiceExceptionNow(String service, long d) throws SQLException;
+	abstract boolean isServiceRunningNormallyNow(String service, long d) throws SQLException;
+	abstract boolean isServiceRunningNow(String service_id, long reference_time_seconds) throws SQLException;
+	public String getTripIdFromServiceAndShortName(String service_id, String trip_short_name) throws SQLException;
+	public String getTripIdFromShortNameNow(String trip_short_name, long reference_time_seconds) throws SQLException;
 	abstract TimeZone getTimeZone();
 }
