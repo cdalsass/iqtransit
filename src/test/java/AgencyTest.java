@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import com.iqtransit.gtfs.GtfsDate;
+import com.iqtransit.geo.JTS;
 
 /**
  * Tests for {@link Foo}.
@@ -104,6 +105,9 @@ public class AgencyTest {
 
             org.junit.Assert.assertEquals("straightforward query should just work", "CR-Fitchburg-CR-Weekday-Recovery-Fitchburg-Aug14-404", agency.getTripIdFromServiceAndShortName("CR-Weekday-Recovery-Fitchburg-Aug14", "404"));
 
+            org.junit.Assert.assertEquals("lat/long be inside boundaries",true, JTS.isPointInBoundary(42.37883631647602, -71.8121337890625, agency.getBoundaries()));
+
+            org.junit.Assert.assertEquals("lat/long should not be inside boundaries",false, JTS.isPointInBoundary(42.45588764197166, -74.7454833984375, agency.getBoundaries()));
 
         } catch (SQLException e) {
             System.out.println(e.toString());

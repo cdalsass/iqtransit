@@ -19,6 +19,19 @@ public class MBTAAgency implements AgencyInterface {
 
 	private Properties config;
 	private Connection conn; 
+
+	/* approximate user's closest agency. is lat/long provided within boundaries? 
+		polygon comes from http://www.the-di-lab.com/polygon/
+	*/
+
+	public double[] getBoundaries() {
+
+		double [] boundary  =	{ 42.819580715795915, -73.45458984375, 42.84777884235988, -70.0927734375, 41.60722821271716, -69.89501953125, 41.41389556467733, -70.8673095703125, 41.65239288426814, -71.795654296875, 42.370720143531976, -73.05908203125 };
+		
+		return boundary;
+
+	}
+
 	
 	/* find the trip id from short name. depends on time becuase multiple services may be running at the moment */
 

@@ -29,6 +29,8 @@ public class GtfsTime {
 
 	}
 
+	/* return the number of milliseconds from midnight, given reference time and timezone */
+
 	public static int msFromMidnight(TimeZone tz, long current_date_millis) {
 		
 		Calendar atMidnight = Calendar.getInstance(tz);
