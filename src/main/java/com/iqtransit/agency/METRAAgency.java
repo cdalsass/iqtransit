@@ -16,10 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.iqtransit.agency.Agency;
 
-public class MBTAAgency extends Agency implements AgencyInterface {
+public class METRAAgency extends Agency implements AgencyInterface {
 
-	public MBTAAgency(Properties config) {
-		this(); /* call constructor */
+	public METRAAgency(Properties config) {
+		this();
 		this.config = config;
 	}
 
@@ -28,8 +28,8 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 	}
 
 	// this is possible, but you have to make sure you don't need config.
-	public MBTAAgency() {
-		this.id = "MBTA";
+	public METRAAgency() {
+		this.id = "METRA";
 	}
 
 	/* approximate user's closest agency. is lat/long provided within boundaries? 
@@ -38,7 +38,7 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 
 	public double[] getBoundaries() {
 
-		double [] boundary  =	{ 42.819580715795915, -73.45458984375, 42.84777884235988, -70.0927734375, 41.60722821271716, -69.89501953125, 41.41389556467733, -70.8673095703125, 41.65239288426814, -71.795654296875, 42.370720143531976, -73.05908203125 };
+		double [] boundary  =	{ 45.920587344733654, -95.361328125, 47.18971246448421, -78.0029296875, 36.56260003738548, -79.189453125, 35.53222622770337, -94.3505859375 };
 		
 		return boundary;
 

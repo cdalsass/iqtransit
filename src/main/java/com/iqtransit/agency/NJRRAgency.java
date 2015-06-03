@@ -16,10 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.iqtransit.agency.Agency;
 
-public class MBTAAgency extends Agency implements AgencyInterface {
+public class NJRRAgency extends Agency implements AgencyInterface {
 
-	public MBTAAgency(Properties config) {
-		this(); /* call constructor */
+	
+	public NJRRAgency(Properties config) {
+		this();
 		this.config = config;
 	}
 
@@ -28,8 +29,8 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 	}
 
 	// this is possible, but you have to make sure you don't need config.
-	public MBTAAgency() {
-		this.id = "MBTA";
+	public NJRRAgency() {
+		this.id = "NJRR";
 	}
 
 	/* approximate user's closest agency. is lat/long provided within boundaries? 
@@ -38,7 +39,7 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 
 	public double[] getBoundaries() {
 
-		double [] boundary  =	{ 42.819580715795915, -73.45458984375, 42.84777884235988, -70.0927734375, 41.60722821271716, -69.89501953125, 41.41389556467733, -70.8673095703125, 41.65239288426814, -71.795654296875, 42.370720143531976, -73.05908203125 };
+		double [] boundary  =	{ 39.40648882684979, -74.02862548828125, 40.48873742102281, -73.7457275390625, 40.58267063809529, -74.04510498046875, 40.71603763556807, -73.95721435546875, 40.80965166748853, -73.8116455078125, 40.96538194577488, -73.65234375, 41.05657308746469, -73.90228271484375, 41.668808555620586, -74.3060302734375, 42.1104489601222, -74.94598388671875, 41.734429390721, -76.09130859375, 40.805493843894155, -76.66259765625, 40.48038142908172, -75.047607421875 };
 		
 		return boundary;
 
@@ -97,7 +98,6 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 
 	}
 
-	
 
 	private int LineNumber(String line_name) {
 

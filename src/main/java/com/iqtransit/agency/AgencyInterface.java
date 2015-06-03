@@ -23,4 +23,5 @@ public interface AgencyInterface {
 	public String getTripIdFromShortNameNow(String trip_short_name, long reference_time_seconds) throws SQLException;
 	abstract TimeZone getTimeZone();
 	public double[] getBoundaries();
+	public String getId();
 }

@@ -16,9 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.iqtransit.agency.Agency;
 
-public class MBTAAgency extends Agency implements AgencyInterface {
+public class LIRRAgency extends Agency implements AgencyInterface {
 
-	public MBTAAgency(Properties config) {
+	public LIRRAgency(Properties config) {
 		this(); /* call constructor */
 		this.config = config;
 	}
@@ -28,17 +28,16 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 	}
 
 	// this is possible, but you have to make sure you don't need config.
-	public MBTAAgency() {
-		this.id = "MBTA";
+	public LIRRAgency() {
+		this.id = "LIRR";
 	}
 
 	/* approximate user's closest agency. is lat/long provided within boundaries? 
 		polygon comes from http://www.the-di-lab.com/polygon/
 	*/
-
 	public double[] getBoundaries() {
 
-		double [] boundary  =	{ 42.819580715795915, -73.45458984375, 42.84777884235988, -70.0927734375, 41.60722821271716, -69.89501953125, 41.41389556467733, -70.8673095703125, 41.65239288426814, -71.795654296875, 42.370720143531976, -73.05908203125 };
+		double [] boundary  =	{ 40.66397287638688, -74.0533447265625, 40.81588791441588, -73.9764404296875, 40.932190241465634, -73.9105224609375, 41.00270266805319, -73.53424072265625, 41.08763212467915, -72.97393798828125, 41.292253642159466, -71.8890380859375, 41.106260503564485, -71.6912841796875, 40.901057866884024, -71.70501708984375, 40.697299008636755, -72.54547119140625, 40.51171103483292, -73.45458984375, 40.48873742102281, -73.948974609375, 40.60769725157612, -74.05609130859375 };
 		
 		return boundary;
 

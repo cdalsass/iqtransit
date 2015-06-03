@@ -21,7 +21,11 @@ public abstract class Agency {
 
 	protected Properties config;
 	protected Connection conn; 
+	protected String id; 
 
+	public String getId() {
+		return id;
+	}
 
 	/* find the trip id from short name. depends on time becuase multiple services may be running at the moment */
 

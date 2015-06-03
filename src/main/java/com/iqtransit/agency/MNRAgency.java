@@ -16,10 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.iqtransit.agency.Agency;
 
-public class MBTAAgency extends Agency implements AgencyInterface {
+public class MNRAgency extends Agency implements AgencyInterface {
 
-	public MBTAAgency(Properties config) {
-		this(); /* call constructor */
+	public MNRAgency(Properties config) {
+		this();
 		this.config = config;
 	}
 
@@ -28,8 +28,8 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 	}
 
 	// this is possible, but you have to make sure you don't need config.
-	public MBTAAgency() {
-		this.id = "MBTA";
+	public MNRAgency() {
+		this.id = "MNR";
 	}
 
 	/* approximate user's closest agency. is lat/long provided within boundaries? 
@@ -38,7 +38,7 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 
 	public double[] getBoundaries() {
 
-		double [] boundary  =	{ 42.819580715795915, -73.45458984375, 42.84777884235988, -70.0927734375, 41.60722821271716, -69.89501953125, 41.41389556467733, -70.8673095703125, 41.65239288426814, -71.795654296875, 42.370720143531976, -73.05908203125 };
+		double [] boundary  =	{ 41.40359574314669, -75.10528564453125,40.96123389519331, -74.95147705078125,40.83874913796459, -74.542236328125,40.69938133866613, -74.0753173828125,40.684803661591246, -73.9984130859375,40.720201058841496, -73.95721435546875,40.7743018636372, -73.87481689453125,40.80757278825516, -73.773193359375,40.93011520598304, -73.71551513671875,41.00270266805319, -73.5260009765625,41.06278606873302, -73.3282470703125,41.11246878918085, -73.18267822265625,41.21998578493921, -72.83660888671875,41.22824901518532, -72.54547119140625,41.25716209782704, -72.1966552734375,41.27780646738183, -72.07855224609375,41.55175560133366, -72.17193603515625,41.902277040963696, -72.35321044921875,42.30575300304638, -73.3721923828125,42.2671470081523, -74.1961669921875,42.07987816698549, -74.9981689453125 };
 		
 		return boundary;
 
@@ -97,7 +97,7 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 
 	}
 
-	
+
 
 	private int LineNumber(String line_name) {
 
