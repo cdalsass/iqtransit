@@ -109,6 +109,14 @@ public class AgencyTest {
 
             org.junit.Assert.assertEquals("lat/long should not be inside boundaries",false, JTS.isPointInBoundary(42.45588764197166, -74.7454833984375, agency.getBoundaries()));
 
+
+            String[] sorted_stop_ids =  agency.getClosestStopIds(null, 42.494107, -71.520105, 2);
+
+            org.junit.Assert.assertEquals("closest stop should be Littleton / Rte 495", "Littleton / Rte 495", sorted_stop_ids[0]);
+            org.junit.Assert.assertEquals("second closest stop should be South Acton", "South Acton", sorted_stop_ids[1]);
+            org.junit.Assert.assertEquals("furthest stop should be Southstation", "Wickford Junction", sorted_stop_ids[sorted_stop_ids.length -1]);
+
+
         } catch (SQLException e) {
             System.out.println(e.toString());
             org.junit.Assert.assertEquals("shouldn't hit mysql error",true, false);

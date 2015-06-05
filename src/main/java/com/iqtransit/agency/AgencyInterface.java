@@ -24,4 +24,5 @@ public interface AgencyInterface {
 	abstract TimeZone getTimeZone();
 	public double[] getBoundaries();
 	public String getId();
+	public String[] getClosestStopIds(String route_id, double latitude, double longitude, int route_type) throws SQLException;
 }
