@@ -29,6 +29,9 @@ public abstract class Agency {
 		return id;
 	}
 
+	
+
+
 	/* simple class to store distance and stop id becuase ArrayList<String,Double> doesn't work */
 	private class DistanceToStopId implements Comparable<DistanceToStopId> {
 
@@ -49,14 +52,17 @@ public abstract class Agency {
 
 		// if route is null, find closest regardless of route. 
 
+		// this query is 2s. 
 		// select distinct stop_locations.stop_id, stop_locations.stop_lat, stop_locations.stop_lon from routes, trips, stop_times, stop_locations where routes.route_type = 2 and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop_id = stop_locations.stop_id order by departure_time;
 
-		// fast!
-		// select departure_time from routes, trips, stop_times, stop_locations where routes.route_type = 2 and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop and stop_locations.stop_id = 'Fitchburg';
+		// this query is .15s
+		// select service_id, departure_time from routes, trips, stop_times, stop_locations where routes.route_type = 2 and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop_id = stop_locations.stop_id and stop_locations.stop_id = 'Fitchburg';
 
 		if (this.conn == null) {
 			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
 		}
+
+		/* simple way to increase performance of this method to index stop_id, location (lat, long), and route_id. now we can directly query index table instead of 4 tables. */
 
 		String sql = "select distinct stop_locations.stop_id as stop_id, stop_locations.stop_lat as lat, stop_locations.stop_lon as longitude from routes, trips, stop_times, stop_locations where routes.route_type = " + route_type + " and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop_id = stop_locations.stop_id";
 
@@ -88,14 +94,13 @@ public abstract class Agency {
         // probably more elegant ways to do this.
         for (int i = 0; i < locations_distances.size(); i++) {
         	stop_id_list[i] = locations_distances.get(i).stop_id;
-			// System.out.println(CrunchifyList.get(i));
 		}
 
 		return stop_id_list;
 
 	} 
 
-	/* find the trip id from short name. depends on time becuase multiple services may be running at the moment */
+	/* find the trip id from short name. depends on time because multiple services may be running at the moment */
 
 	public String getTripIdFromShortNameNow(String trip_short_name, long reference_time_seconds) throws SQLException {
 
