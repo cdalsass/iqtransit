@@ -3,6 +3,8 @@ import java.sql.SQLException;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.TimeZone;
+import com.iqtransit.agency.UpcomingTrain;
+import java.util.ArrayList;
 
 public interface AgencyInterface {
 
@@ -25,4 +27,14 @@ public interface AgencyInterface {
 	public double[] getBoundaries();
 	public String getId();
 	public String[] getClosestStopIds(String route_id, double latitude, double longitude, int route_type) throws SQLException;
+	public String[] getServicesIdsRunningNow(int route_type, String route_id, long reference_time_seconds) throws SQLException;
+	public ArrayList <UpcomingTrain> getUpcomingTripsFromStop(String stop_id, String [] service_ids) throws SQLException ;
+	public String getStopName(String stop_id) throws SQLException;
+	public String getStartTime(String trip_id)  throws SQLException;
+	//public String getArrivalTime(String trip_id)  throws SQLException;
+	public String getTerminalTime(String trip_id)  throws SQLException;
+	public String getTerminalStopName(String trip_id)  throws SQLException;
+	public String getTerminalStopId(String trip_id)  throws SQLException;
+	public String getStartStopName(String trip_id)  throws SQLException ;
+	public String getStartStopId(String trip_id)  throws SQLException;
 }

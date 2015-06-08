@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Date;
 import com.iqtransit.gtfs.GtfsDate;
 import com.iqtransit.geo.JTS;
+import com.iqtransit.agency.UpcomingTrain;
+import java.util.ArrayList;
 
 /**
  * Tests for {@link Foo}.
@@ -115,6 +117,48 @@ public class AgencyTest {
             org.junit.Assert.assertEquals("closest stop should be Littleton / Rte 495", "Littleton / Rte 495", sorted_stop_ids[0]);
             org.junit.Assert.assertEquals("second closest stop should be South Acton", "South Acton", sorted_stop_ids[1]);
             org.junit.Assert.assertEquals("furthest stop should be Southstation", "Wickford Junction", sorted_stop_ids[sorted_stop_ids.length -1]);
+
+            
+        
+            
+
+
+
+            String[] service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1432555200L);
+            org.junit.Assert.assertEquals("service running should be sunday", "CR-Sunday-Fitchburg-Aug14", service_ids[0]);
+
+            service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1433553791L /* june 5th, friday regular weekday service. */);
+            org.junit.Assert.assertEquals("service running should be weekday", "CR-Weekday-Fitchburg-Aug14", service_ids[0]);
+
+            service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1432468800L /* may 24th, service was suspended on weekends all summer except this weekend. sunday service on sunday */);
+            org.junit.Assert.assertEquals("service running should be sunday", "CR-Sunday-Fitchburg-Aug14", service_ids[0]);
+
+            service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1432382400L /* may 23th, service was suspended on weekends all summer except this weekend. sat service on sat */);
+            org.junit.Assert.assertEquals("service running should be sat.", "CR-Saturday-Fitchburg-Aug14", service_ids[0]);
+            org.junit.Assert.assertEquals("one service running that day", 1, service_ids.length);
+            
+
+            service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1433622687L /* june 6 2015, service was suspended on weekends all summer except this weekend. sat service on sat */);
+            ArrayList<UpcomingTrain> upcoming = agency.getUpcomingTripsFromStop("Littleton / Rte 495", service_ids);
+            org.junit.Assert.assertEquals("expect no trains during weekends of summer 2015", 0, upcoming.size());
+
+            // should this be part of a generatal GTFS class?
+            org.junit.Assert.assertEquals("check get stop name", agency.getStopName("Worcester / Union Station"), "Worcester / Union Station");
+
+            org.junit.Assert.assertEquals("check get stop name", agency.getStopName("9251"), "Main St @ Water St");
+
+            org.junit.Assert.assertEquals("check departure time","21:45:00", agency.getStartTime("CR-Fitchburg-CR-Sunday-Fitchburg-Aug14-2414"));
+
+
+            org.junit.Assert.assertEquals("check terminal time", "23:12:00", agency.getTerminalTime("CR-Fitchburg-CR-Sunday-Fitchburg-Aug14-2414"));
+
+            org.junit.Assert.assertEquals("check start stop id","Fitchburg", agency.getStartStopId("CR-Fitchburg-CR-Sunday-Fitchburg-Aug14-2414"));
+            org.junit.Assert.assertEquals("check start stop name", "Fitchburg",agency.getStartStopName("CR-Fitchburg-CR-Sunday-Fitchburg-Aug14-2414"));
+
+            org.junit.Assert.assertEquals("check terminal stop id","North Station",agency.getTerminalStopId("CR-Fitchburg-CR-Sunday-Fitchburg-Aug14-2414"));
+            
+            org.junit.Assert.assertEquals("check stop name", "North Station", agency.getTerminalStopName("CR-Fitchburg-CR-Sunday-Fitchburg-Aug14-2414"));
+
 
 
         } catch (SQLException e) {

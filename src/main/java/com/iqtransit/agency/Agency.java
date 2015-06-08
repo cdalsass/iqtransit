@@ -17,6 +17,9 @@ import java.util.Calendar;
 import java.util.List;
 import com.iqtransit.geo.Algorithms;
 import java.util.Collections;
+import com.iqtransit.agency.UpcomingTrain;
+import com.iqtransit.gtfs.GtfsTime;
+import java.util.Arrays;
 /* contains many of the GTFS database-specific functions, which are likely to vary based on agency. */
 
 public abstract class Agency {
@@ -28,8 +31,258 @@ public abstract class Agency {
 	public String getId() {
 		return id;
 	}
-
 	
+	// ton's of duplicated code here.... not sure if we should factor or not....
+
+	public String getStartStopName(String trip_id)  throws SQLException {
+
+		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence asc limit 1";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, trip_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String stop_id = results.getString("stop_id");
+        	stmt.close();
+        	results.close();
+        	return this.getStopName(stop_id);
+        }
+
+	}
+
+	public String getStartStopId(String trip_id)  throws SQLException {
+
+		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence asc limit 1";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, trip_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String stop_id = results.getString("stop_id");
+        	stmt.close();
+        	results.close();
+        	return stop_id;
+        }
+
+	}
+
+
+	public String getTerminalStopName(String trip_id)  throws SQLException {
+
+		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence desc limit 1";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, trip_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String stop_id = results.getString("stop_id");
+        	stmt.close();
+        	results.close();
+        	return this.getStopName(stop_id);
+        }
+
+	}
+
+	public String getTerminalStopId(String trip_id)  throws SQLException {
+
+		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence desc limit 1";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, trip_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String stop_id = results.getString("stop_id");
+        	stmt.close();
+        	results.close();
+        	return stop_id;
+        }
+
+	}
+
+	public String getTerminalTime(String trip_id)  throws SQLException {
+
+		String sql = "select arrival_time from stop_times where trip_id = ? order by stop_sequence desc limit 1";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, trip_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String arrival_time = results.getString("arrival_time");
+        	stmt.close();
+        	results.close();
+        	return arrival_time;
+        }
+
+	}
+
+	public String getStartTime(String trip_id)  throws SQLException {
+
+		String sql = "select departure_time from stop_times where trip_id = ? order by stop_sequence limit 1";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, trip_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String departure_time = results.getString("departure_time");
+        	stmt.close();
+        	results.close();
+        	return departure_time;
+        }
+
+	}
+
+	public String getStopName(String stop_id)  throws SQLException {
+
+		String sql = "select stop_name from stop_locations where stop_id = ?";	
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        stmt.setString(1, stop_id);
+  
+        ResultSet results = stmt.executeQuery();
+ 
+        if (!results.next()) {
+        	 // returned no records from results set so not special day 
+        	stmt.close();
+        	results.close();
+        	return null;
+        } else {
+        	String stop_name = results.getString("stop_name");
+        	stmt.close();
+        	results.close();
+        	return stop_name;
+        }
+
+	}
+
+	public ArrayList<UpcomingTrain> getUpcomingTripsFromStop(String stop_id, String [] current_service_ids) throws SQLException {
+
+		if (this.conn == null) {
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
+		}
+
+		String sql = "select stop_times.stop_id, trips.trip_id, routes.route_id, route_long_name, arrival_time, service_id, trip_headsign, trip_short_name, trips.trip_id FROM trips, stop_times, routes WHERE trips.trip_id = stop_times.trip_id AND stop_times.stop_id = ? and routes.route_id = trips.route_id";
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, stop_id);
+
+		ResultSet results = stmt.executeQuery();
+
+        ArrayList<UpcomingTrain> upcoming_trains = new ArrayList<UpcomingTrain>();
+
+        while (results.next())  {
+                
+        	// if service id is included in list, add it. 
+        	// just adding lots of fields. not totally sure if this will be inneficient, but most lookups are 1 table and very fast.
+        	if (Arrays.asList(current_service_ids).contains(results.getString("service_id"))) {
+
+        		upcoming_trains.add(new UpcomingTrain( 
+        			results.getString("trip_id"), 
+        			results.getString("trip_short_name"), 
+        			results.getString("arrival_time"), 
+        			this.getStopName(results.getString("stop_id")), // stop_name
+        			results.getString("stop_id"), 
+        			this.getStartTime(results.getString("trip_id")), // start time
+        			this.getTerminalTime(results.getString("trip_id")), // terminal time
+        			this.getStartStopId(results.getString("trip_id")), // start_stop_id 
+        			this.getTerminalStopId(results.getString("trip_id")), //terminal_stop_id
+        			this.getTerminalStopName(results.getString("trip_id")), // terminal_stop_name
+        			results.getString("route_id"),
+                                results.getString("route_long_name")));
+
+        	}
+        }
+
+        stmt.close();
+        results.close();
+        return upcoming_trains;
+
+	}
+
+	/* route id can be null */
+
+	public String[] getServicesIdsRunningNow(int route_type, String route_id, long reference_time_seconds) throws SQLException {
+
+		if (this.conn == null) {
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
+		}
+
+		String sql = "select distinct service_id as service_id from routes, trips where routes.route_type = " + route_type + " and routes.route_id = trips.route_id";
+
+		if (route_id != null) {
+			sql += " and routes.route_id = ?"; 
+		}
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        if (route_id != null) {
+        	stmt.setString(1, route_id);
+        }
+
+        ResultSet results = stmt.executeQuery();
+
+        List<String> route_ids = new ArrayList<String>();
+
+        while (results.next())  {
+        	if (isServiceRunningNow(results.getString("service_id"),  reference_time_seconds)) {
+        		route_ids.add(results.getString("service_id"));
+        	}
+        }
+
+        stmt.close();
+        results.close();
+
+        return (String[]) route_ids.toArray(new String[route_ids.size()]);
+
+	}
 
 
 	/* simple class to store distance and stop id becuase ArrayList<String,Double> doesn't work */
@@ -59,12 +312,12 @@ public abstract class Agency {
 		// select service_id, departure_time from routes, trips, stop_times, stop_locations where routes.route_type = 2 and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop_id = stop_locations.stop_id and stop_locations.stop_id = 'Fitchburg';
 
 		if (this.conn == null) {
-			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
 		}
 
 		/* simple way to increase performance of this method to index stop_id, location (lat, long), and route_id. now we can directly query index table instead of 4 tables. */
 
-		String sql = "select distinct stop_locations.stop_id as stop_id, stop_locations.stop_lat as lat, stop_locations.stop_lon as longitude from routes, trips, stop_times, stop_locations where routes.route_type = " + route_type + " and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop_id = stop_locations.stop_id";
+		String sql = "select * from stop_location_index where route_type = " + route_type;
 
 		if (route_id != null) {
 			sql += " and routes.route_id = ?"; 
@@ -177,7 +430,7 @@ public abstract class Agency {
 	public boolean isServiceRunningNormallyNow(String service_id, long reference_time_seconds) throws SQLException {
 
 		if (this.conn == null) {
-			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
 		}
 
 		GtfsDate date = new GtfsDate();
@@ -186,8 +439,7 @@ public abstract class Agency {
 
 		String sql = "select monday,tuesday,wednesday,thursday,friday,saturday,sunday from calendar where service_id = ? and str_to_date(start_date,'%Y%m%d') <= str_to_date('" + date.fromUnix(reference_time_seconds,tz) + "', '%Y%m%d')  and end_date >= str_to_date('" + date.fromUnix(reference_time_seconds,tz) + "','%Y%m%d')";	
 
-		System.out.println(sql);
-
+	
 		PreparedStatement stmt = conn.prepareStatement(sql);
         
         stmt.setString(1, service_id);
@@ -260,7 +512,7 @@ public abstract class Agency {
 		 final int SERVICE_ADDED = 1;
 
 		if (this.conn == null) {
-			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
 		}
 
 		TimeZone tz = this.getTimeZone();
@@ -294,7 +546,7 @@ public abstract class Agency {
 	public String[] getServicesIdsFromShortName(String trip_short_name) throws SQLException {
 		
 		if (this.conn == null) {
-			throw new SQLException("connection missing from MBTAAgency. be sure to call assignConnection()");
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
 		}
 
 		ArrayList service_list = new ArrayList<String>();
