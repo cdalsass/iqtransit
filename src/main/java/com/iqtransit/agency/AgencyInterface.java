@@ -28,7 +28,7 @@ public interface AgencyInterface {
 	public String getId();
 	public String[] getClosestStopIds(String route_id, double latitude, double longitude, int route_type) throws SQLException;
 	public String[] getServicesIdsRunningNow(int route_type, String route_id, long reference_time_seconds) throws SQLException;
-	public ArrayList <UpcomingTrain> getUpcomingTripsFromStop(String stop_id, String [] service_ids) throws SQLException ;
+	public ArrayList <UpcomingTrain> getTripsFromStop(String stop_id, String [] service_ids) throws SQLException ;
 	public String getStopName(String stop_id) throws SQLException;
 	public String getStartTime(String trip_id)  throws SQLException;
 	//public String getArrivalTime(String trip_id)  throws SQLException;

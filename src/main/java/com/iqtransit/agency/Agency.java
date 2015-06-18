@@ -203,7 +203,7 @@ public abstract class Agency {
 
 	}
 
-	public ArrayList<UpcomingTrain> getUpcomingTripsFromStop(String stop_id, String [] current_service_ids) throws SQLException {
+	public ArrayList<UpcomingTrain> getTripsFromStop(String stop_id, String [] current_service_ids) throws SQLException {
 
 		if (this.conn == null) {
 			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
@@ -216,34 +216,34 @@ public abstract class Agency {
 
 		ResultSet results = stmt.executeQuery();
 
-        ArrayList<UpcomingTrain> upcoming_trains = new ArrayList<UpcomingTrain>();
+                ArrayList<UpcomingTrain> upcoming_trains = new ArrayList<UpcomingTrain>();
 
-        while (results.next())  {
-                
-        	// if service id is included in list, add it. 
-        	// just adding lots of fields. not totally sure if this will be inneficient, but most lookups are 1 table and very fast.
-        	if (Arrays.asList(current_service_ids).contains(results.getString("service_id"))) {
+                while (results.next())  {
+                        
+                	// if service id is included in list, add it. 
+                	// just adding lots of fields. not totally sure if this will be inneficient, but most lookups are 1 table and very fast.
+                	if (Arrays.asList(current_service_ids).contains(results.getString("service_id"))) {
 
-        		upcoming_trains.add(new UpcomingTrain( 
-        			results.getString("trip_id"), 
-        			results.getString("trip_short_name"), 
-        			results.getString("arrival_time"), 
-        			this.getStopName(results.getString("stop_id")), // stop_name
-        			results.getString("stop_id"), 
-        			this.getStartTime(results.getString("trip_id")), // start time
-        			this.getTerminalTime(results.getString("trip_id")), // terminal time
-        			this.getStartStopId(results.getString("trip_id")), // start_stop_id 
-        			this.getTerminalStopId(results.getString("trip_id")), //terminal_stop_id
-        			this.getTerminalStopName(results.getString("trip_id")), // terminal_stop_name
-        			results.getString("route_id"),
-                                results.getString("route_long_name")));
+                		upcoming_trains.add(new UpcomingTrain( 
+                			results.getString("trip_id"), 
+                			results.getString("trip_short_name"), 
+                			results.getString("arrival_time"), 
+                			this.getStopName(results.getString("stop_id")), // stop_name
+                			results.getString("stop_id"), 
+                			this.getStartTime(results.getString("trip_id")), // start time
+                			this.getTerminalTime(results.getString("trip_id")), // terminal time
+                			this.getStartStopId(results.getString("trip_id")), // start_stop_id 
+                			this.getTerminalStopId(results.getString("trip_id")), //terminal_stop_id
+                			this.getTerminalStopName(results.getString("trip_id")), // terminal_stop_name
+                			results.getString("route_id"),
+                                        results.getString("route_long_name")));
 
-        	}
-        }
+                	}
+                }
 
-        stmt.close();
-        results.close();
-        return upcoming_trains;
+                stmt.close();
+                results.close();
+                return upcoming_trains;
 
 	}
 

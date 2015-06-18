@@ -139,7 +139,7 @@ public class AgencyTest {
             
 
             service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1433622687L /* june 6 2015, service was suspended on weekends all summer except this weekend. sat service on sat */);
-            ArrayList<UpcomingTrain> upcoming = agency.getUpcomingTripsFromStop("Littleton / Rte 495", service_ids);
+            ArrayList<UpcomingTrain> upcoming = agency.getTripsFromStop("Littleton / Rte 495", service_ids);
             org.junit.Assert.assertEquals("expect no trains during weekends of summer 2015", 0, upcoming.size());
 
             // should this be part of a generatal GTFS class?
