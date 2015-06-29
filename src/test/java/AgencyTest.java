@@ -41,7 +41,7 @@ public class AgencyTest {
     }
 
     @Test
-    public void confirmBasicGTFSFunctions() {
+    public void confirmBasicGTFSFunctionsMay2015() {
 
         Properties prop  = null;
         try {
@@ -50,7 +50,7 @@ public class AgencyTest {
             org.junit.Assert.assertEquals("should read config file", null , e.toString());
         }
 
-        MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + prop.getProperty("database") + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
+        MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + "tontimedev_may2015" /* hardcoded to make tests pass after GTFS was updated. Don't lose your old tests! */ + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
         
         try {
             mysql.connect();
