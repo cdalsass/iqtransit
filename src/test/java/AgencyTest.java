@@ -32,13 +32,54 @@ import java.util.ArrayList;
  */
 public class AgencyTest {
 
-    @Test
-    public void thisAlwaysPasses() {
 
-    	AgencyInterface a = new MBTAAgency();
-    	org.junit.Assert.assertEquals("failure - strings are not equal", "text", "text");
-    
+    @Test
+    public void confirmBasicGTFSFunctions() {
+
+        Properties prop  = null;
+        try {
+            prop = Config.load();
+        } catch (IOException e) {
+            org.junit.Assert.assertEquals("should read config file", null , e.toString());
+        }
+
+        MySQL mysql = new MySQL("jdbc:mysql://" + prop.getProperty("dbhost") + ":3306/"  + prop.getProperty("database")  + "?user=" + prop.getProperty("dbuser") + "&password=" +prop.getProperty("dbpassword"));
+        
+        try {
+            mysql.connect();
+            System.out.println("just connected");
+        } catch (Exception e) {
+            System.out.println("unable to connect to database " + e.toString()); 
+            org.junit.Assert.assertEquals("should connect to db", null , e.toString());
+        }
+        
+        AgencyInterface agency = new MBTAAgency();
+        // nice to have: agency.isStopTimeActive(rail, stop, number, time, new Date());
+        // must have: agency.isRunningToday(String short_trip_name, new Date());
+        // agency.hasScheduleChanged(String short_trip_name, String stop, String date, new Date());
+        // MBTA stores rail, stop, number time. we don't store a service id. 
+        // MTA doesn't use a number on it's trains (I don't think)
+        agency.assignConnection(mysql.getConn());
+        String[] services;
+
+        try {
+
+            String[] service_ids = agency.getServicesIdsRunningNow(2, "CR-Fitchburg", 1435752939L /* July 1, 2015*/);
+            org.junit.Assert.assertEquals("CR-Weekday-Fitchburg-Aug14 should be running", true, Arrays.asList(service_ids).contains("CR-Weekday-Fitchburg-Aug14"));
+
+            ArrayList<UpcomingTrain> upcoming = agency.getTripsFromStop("Littleton / Rte 495", service_ids);
+
+            // verify that the 452 is found. 
+            for (UpcomingTrain t:upcoming) {
+                System.out.println("train id: " + t.identifier + " short name: " + t.short_name);
+            }
+
+
+        } catch (Exception e) {
+            System.out.println("hit exception");
+        }
     }
+
 
     @Test
     public void confirmBasicGTFSFunctionsMay2015() {
