@@ -55,7 +55,7 @@ public class GtfsTime {
 			civilianhours = militaryhours - 24; ampm = "AM";
 		} else if (militaryhours == 24 && militarymins > 0) {
 			civilianhours = 12; ampm = "AM";
-		} else if (	militaryhours == 12 && militarymins > 0) {
+		} else if (	militaryhours == 12 && militarymins >= 0) {
 			civilianhours = militaryhours; ampm = "PM";
 		} else { 
 			civilianhours = militaryhours ; ampm = "AM"; 
