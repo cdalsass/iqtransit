@@ -261,26 +261,26 @@ public abstract class Agency {
 			sql += " and routes.route_id = ?"; 
 		}
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        if (route_id != null) {
-        	stmt.setString(1, route_id);
-        }
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                
+                if (route_id != null) {
+                	stmt.setString(1, route_id);
+                }
 
-        ResultSet results = stmt.executeQuery();
+                ResultSet results = stmt.executeQuery();
 
-        List<String> route_ids = new ArrayList<String>();
+                List<String> route_ids = new ArrayList<String>();
 
-        while (results.next())  {
-        	if (isServiceRunningNow(results.getString("service_id"),  reference_time_seconds)) {
-        		route_ids.add(results.getString("service_id"));
-        	}
-        }
+                while (results.next())  {
+                	if (isServiceRunningNow(results.getString("service_id"),  reference_time_seconds)) {
+                		route_ids.add(results.getString("service_id"));
+                	}
+                }
 
-        stmt.close();
-        results.close();
+                stmt.close();
+                results.close();
 
-        return (String[]) route_ids.toArray(new String[route_ids.size()]);
+                return (String[]) route_ids.toArray(new String[route_ids.size()]);
 
 	}
 
@@ -384,22 +384,22 @@ public abstract class Agency {
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
         
-        stmt.setString(1, service_id);
-        stmt.setString(2, trip_short_name);
+                stmt.setString(1, service_id);
+                stmt.setString(2, trip_short_name);
 
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String trip_id = results.getString("trip_id");
-        	stmt.close();
-        	results.close();
-        	return trip_id;
-        }
+                ResultSet results = stmt.executeQuery();
+         
+                if (!results.next()) {
+                	 // returned no records from results set so not special day 
+                	stmt.close();
+                	results.close();
+                	return null;
+                } else {
+                	String trip_id = results.getString("trip_id");
+                	stmt.close();
+                	results.close();
+                	return trip_id;
+                }
 	}
 
 	/* high level function taking into account holidays, weekends and weekdays */
@@ -409,8 +409,10 @@ public abstract class Agency {
 		int exception_status = this.isServiceExceptionNow(service_id, reference_time_seconds);
 
 		if (exception_status == 2) {
+                        // remove service.
 			return false;
 		} else if (exception_status == 1) {
+                        // add
 			return true;
 		} else {
 
