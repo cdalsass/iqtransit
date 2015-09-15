@@ -225,6 +225,7 @@ public abstract class Agency {
                 	if (Arrays.asList(current_service_ids).contains(results.getString("service_id"))) {
 
                 		upcoming_trains.add(new UpcomingTrain( 
+                                        this.getId(),
                 			results.getString("trip_id"), 
                 			results.getString("trip_short_name"), 
                 			results.getString("arrival_time"), 

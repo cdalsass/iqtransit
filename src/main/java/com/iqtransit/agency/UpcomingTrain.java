@@ -14,10 +14,12 @@ public class UpcomingTrain {
 	public String terminal_stop_name;
 	public String route_id;
 	public String route_name;
+	public String agency_id; 
 
 
-	public UpcomingTrain(String identifier, String short_name, String arrival_time, String stop_name, String stop_id, String start_time, String terminal_time, String start_stop_id, String terminal_stop_id, String terminal_stop_name, String route_id, String route_name) {
+	public UpcomingTrain(String agency_id, String identifier, String short_name, String arrival_time, String stop_name, String stop_id, String start_time, String terminal_time, String start_stop_id, String terminal_stop_id, String terminal_stop_name, String route_id, String route_name) {
 
+		this.agency_id = agency_id;
 		this.identifier = identifier;
 		this.short_name = short_name;
 		this.arrival_time = arrival_time;

@@ -1,10 +1,3 @@
-// javac -cp junit.jar com/iqtransit/*.java
-// java -cp .:junit.jar:hamcrest-core-1.3.jar org.junit.runner.JUnitCore com.iqtransit.AgencyTest
-
-// javac -cp ~/Applications/android-sdk-macosx/platforms/android-20/android.jar:junit.jar com/example/foo/*.java
-
-// java  -cp .:junit.jar:hamcrest-core-1.3.jar:/Users/cdalsass/Applications/android-sdk-macosx/platforms/android-20/android.jar org.junit.runner.JUnitCore com.example.foo.FooTest  | less
-
 package com.iqtransit.agency;
 
 import static org.junit.Assert.assertEquals;

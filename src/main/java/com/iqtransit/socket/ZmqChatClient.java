@@ -103,7 +103,7 @@ public class ZmqChatClient extends Thread {
 
   public void on(String event) {
     if (this.clientEventListener != null) {
-        this.clientEventListener.onClientEvent(event);
+        this.clientEventListener.onClientEvent(event.substring(1) /* trim off internal message passing code */);
     }
   }
 
