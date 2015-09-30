@@ -39,22 +39,22 @@ public abstract class Agency {
 		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence asc limit 1";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, trip_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String stop_id = results.getString("stop_id");
-        	stmt.close();
-        	results.close();
-        	return this.getStopName(stop_id);
-        }
+	
+		stmt.setString(1, trip_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String stop_id = results.getString("stop_id");
+			stmt.close();
+			results.close();
+			return this.getStopName(stop_id);
+		}
 
 	}
 
@@ -63,22 +63,22 @@ public abstract class Agency {
 		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence asc limit 1";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, trip_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String stop_id = results.getString("stop_id");
-        	stmt.close();
-        	results.close();
-        	return stop_id;
-        }
+	
+		stmt.setString(1, trip_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String stop_id = results.getString("stop_id");
+			stmt.close();
+			results.close();
+			return stop_id;
+		}
 
 	}
 
@@ -88,22 +88,22 @@ public abstract class Agency {
 		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence desc limit 1";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, trip_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String stop_id = results.getString("stop_id");
-        	stmt.close();
-        	results.close();
-        	return this.getStopName(stop_id);
-        }
+	
+		stmt.setString(1, trip_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String stop_id = results.getString("stop_id");
+			stmt.close();
+			results.close();
+			return this.getStopName(stop_id);
+		}
 
 	}
 
@@ -112,22 +112,22 @@ public abstract class Agency {
 		String sql = "select stop_id from stop_times where trip_id = ? order by stop_sequence desc limit 1";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, trip_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String stop_id = results.getString("stop_id");
-        	stmt.close();
-        	results.close();
-        	return stop_id;
-        }
+	
+		stmt.setString(1, trip_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String stop_id = results.getString("stop_id");
+			stmt.close();
+			results.close();
+			return stop_id;
+		}
 
 	}
 
@@ -136,22 +136,22 @@ public abstract class Agency {
 		String sql = "select arrival_time from stop_times where trip_id = ? order by stop_sequence desc limit 1";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, trip_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String arrival_time = results.getString("arrival_time");
-        	stmt.close();
-        	results.close();
-        	return arrival_time;
-        }
+	
+		stmt.setString(1, trip_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String arrival_time = results.getString("arrival_time");
+			stmt.close();
+			results.close();
+			return arrival_time;
+		}
 
 	}
 
@@ -160,22 +160,22 @@ public abstract class Agency {
 		String sql = "select departure_time from stop_times where trip_id = ? order by stop_sequence limit 1";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, trip_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String departure_time = results.getString("departure_time");
-        	stmt.close();
-        	results.close();
-        	return departure_time;
-        }
+	
+		stmt.setString(1, trip_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String departure_time = results.getString("departure_time");
+			stmt.close();
+			results.close();
+			return departure_time;
+		}
 
 	}
 
@@ -184,22 +184,22 @@ public abstract class Agency {
 		String sql = "select stop_name from stop_locations where stop_id = ?";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, stop_id);
-  
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return null;
-        } else {
-        	String stop_name = results.getString("stop_name");
-        	stmt.close();
-        	results.close();
-        	return stop_name;
-        }
+	
+		stmt.setString(1, stop_id);
+	  
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String stop_name = results.getString("stop_name");
+			stmt.close();
+			results.close();
+			return stop_name;
+		}
 
 	}
 
@@ -216,35 +216,35 @@ public abstract class Agency {
 
 		ResultSet results = stmt.executeQuery();
 
-                ArrayList<UpcomingTrain> upcoming_trains = new ArrayList<UpcomingTrain>();
+		ArrayList<UpcomingTrain> upcoming_trains = new ArrayList<UpcomingTrain>();
 
-                while (results.next())  {
-                        
-                	// if service id is included in list, add it. 
-                	// just adding lots of fields. not totally sure if this will be inneficient, but most lookups are 1 table and very fast.
-                	if (Arrays.asList(current_service_ids).contains(results.getString("service_id"))) {
+		while (results.next())  {
+			
+			// if service id is included in list, add it. 
+			// just adding lots of fields. not totally sure if this will be inneficient, but most lookups are 1 table and very fast.
+			if (Arrays.asList(current_service_ids).contains(results.getString("service_id"))) {
 
-                		upcoming_trains.add(new UpcomingTrain( 
-                                        this.getId(),
-                			results.getString("trip_id"), 
-                			results.getString("trip_short_name"), 
-                			results.getString("arrival_time"), 
-                			this.getStopName(results.getString("stop_id")), // stop_name
-                			results.getString("stop_id"), 
-                			this.getStartTime(results.getString("trip_id")), // start time
-                			this.getTerminalTime(results.getString("trip_id")), // terminal time
-                			this.getStartStopId(results.getString("trip_id")), // start_stop_id 
-                			this.getTerminalStopId(results.getString("trip_id")), //terminal_stop_id
-                			this.getTerminalStopName(results.getString("trip_id")), // terminal_stop_name
-                			results.getString("route_id"),
-                                        results.getString("route_long_name")));
+				upcoming_trains.add(new UpcomingTrain( 
+					this.getId(),
+					results.getString("trip_id"), 
+					results.getString("trip_short_name"), 
+					results.getString("arrival_time"), 
+					this.getStopName(results.getString("stop_id")), // stop_name
+					results.getString("stop_id"), 
+					this.getStartTime(results.getString("trip_id")), // start time
+					this.getTerminalTime(results.getString("trip_id")), // terminal time
+					this.getStartStopId(results.getString("trip_id")), // start_stop_id 
+					this.getTerminalStopId(results.getString("trip_id")), //terminal_stop_id
+					this.getTerminalStopName(results.getString("trip_id")), // terminal_stop_name
+					results.getString("route_id"),
+					results.getString("route_long_name")));
 
-                	}
-                }
+			}
+		}
 
-                stmt.close();
-                results.close();
-                return upcoming_trains;
+		stmt.close();
+		results.close();
+		return upcoming_trains;
 
 	}
 
@@ -262,26 +262,26 @@ public abstract class Agency {
 			sql += " and routes.route_id = ?"; 
 		}
 
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                
-                if (route_id != null) {
-                	stmt.setString(1, route_id);
-                }
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		
+		if (route_id != null) {
+			stmt.setString(1, route_id);
+		}
 
-                ResultSet results = stmt.executeQuery();
+		ResultSet results = stmt.executeQuery();
 
-                List<String> route_ids = new ArrayList<String>();
+		List<String> route_ids = new ArrayList<String>();
 
-                while (results.next())  {
-                	if (isServiceRunningNow(results.getString("service_id"),  reference_time_seconds)) {
-                		route_ids.add(results.getString("service_id"));
-                	}
-                }
+		while (results.next())  {
+			if (isServiceRunningNow(results.getString("service_id"),  reference_time_seconds)) {
+				route_ids.add(results.getString("service_id"));
+			}
+		}
 
-                stmt.close();
-                results.close();
+		stmt.close();
+		results.close();
 
-                return (String[]) route_ids.toArray(new String[route_ids.size()]);
+		return (String[]) route_ids.toArray(new String[route_ids.size()]);
 
 	}
 
@@ -298,7 +298,7 @@ public abstract class Agency {
 
 		@Override
 	    public int compareTo(DistanceToStopId compareto) {
-	        return Double.compare(this.distance, compareto.distance);
+		return Double.compare(this.distance, compareto.distance);
 	    }
 	}
 
@@ -326,32 +326,31 @@ public abstract class Agency {
 
 		List<DistanceToStopId> locations_distances = new ArrayList<DistanceToStopId>();
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        if (route_id != null) {
-        	stmt.setString(1, route_id);
-        }
-
-        ResultSet results = stmt.executeQuery();
-
-        while (results.next())  {
-        	locations_distances.add(new DistanceToStopId(results.getString("stop_id"), Algorithms.distanceTo(latitude, longitude, results.getDouble("lat"),results.getDouble("longitude"))));
-        }
-        
-        stmt.close();
-        results.close();
-
-        Collections.sort(locations_distances);
-
-        String [] stop_id_list = new String[locations_distances.size()];
-
-        // probably more elegant ways to do this.
-        for (int i = 0; i < locations_distances.size(); i++) {
-        	stop_id_list[i] = locations_distances.get(i).stop_id;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		
+		if (route_id != null) {
+			stmt.setString(1, route_id);
 		}
 
-		return stop_id_list;
+		ResultSet results = stmt.executeQuery();
 
+		while (results.next())  {
+			locations_distances.add(new DistanceToStopId(results.getString("stop_id"), Algorithms.distanceTo(latitude, longitude, results.getDouble("lat"),results.getDouble("longitude"))));
+		}
+		
+		stmt.close();
+		results.close();
+
+		Collections.sort(locations_distances);
+
+		String [] stop_id_list = new String[locations_distances.size()];
+
+		// probably more elegant ways to do this.
+		for (int i = 0; i < locations_distances.size(); i++) {
+			stop_id_list[i] = locations_distances.get(i).stop_id;
+			}
+
+			return stop_id_list;
 	} 
 
 	/* find the trip id from short name. depends on time because multiple services may be running at the moment */
@@ -384,23 +383,23 @@ public abstract class Agency {
 		String sql = "select trip_id from trips where service_id = ? and trip_short_name = ?";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-                stmt.setString(1, service_id);
-                stmt.setString(2, trip_short_name);
+	
+		stmt.setString(1, service_id);
+		stmt.setString(2, trip_short_name);
 
-                ResultSet results = stmt.executeQuery();
-         
-                if (!results.next()) {
-                	 // returned no records from results set so not special day 
-                	stmt.close();
-                	results.close();
-                	return null;
-                } else {
-                	String trip_id = results.getString("trip_id");
-                	stmt.close();
-                	results.close();
-                	return trip_id;
-                }
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return null;
+		} else {
+			String trip_id = results.getString("trip_id");
+			stmt.close();
+			results.close();
+			return trip_id;
+		}
 	}
 
 	/* high level function taking into account holidays, weekends and weekdays */
@@ -410,10 +409,10 @@ public abstract class Agency {
 		int exception_status = this.isServiceExceptionNow(service_id, reference_time_seconds);
 
 		if (exception_status == 2) {
-                        // remove service.
+			// remove service.
 			return false;
 		} else if (exception_status == 1) {
-                        // add
+			// add
 			return true;
 		} else {
 
@@ -444,40 +443,40 @@ public abstract class Agency {
 
 	
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, service_id);
+	
+		stmt.setString(1, service_id);
 
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	results.close();
-        	return false;
-        }
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			results.close();
+			return false;
+		}
 
-        int monday, tuesday, wednesday, thursday, friday, saturday, sunday;
-        
-        monday = results.getInt("monday");
-        tuesday = results.getInt("tuesday");
-        wednesday = results.getInt("wednesday");
-        thursday = results.getInt("thursday");
-        friday = results.getInt("friday");
-        saturday = results.getInt("saturday");
-        sunday = results.getInt("sunday");
-        stmt.close();
-        results.close();
-        
-        
-        // find out the day of week by parsing that string formatted date, which takes into account "train time"
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        
-        Date dt2;
+		int monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+		
+		monday = results.getInt("monday");
+		tuesday = results.getInt("tuesday");
+		wednesday = results.getInt("wednesday");
+		thursday = results.getInt("thursday");
+		friday = results.getInt("friday");
+		saturday = results.getInt("saturday");
+		sunday = results.getInt("sunday");
+		stmt.close();
+		results.close();
+	
+	
+		// find out the day of week by parsing that string formatted date, which takes into account "train time"
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		
+		Date dt2;
 
-        try {
-			dt2 = sdf.parse(date.fromUnix(reference_time_seconds,tz));
-        } catch (Exception e) {
-        	System.out.println(e.toString());
-        	return false; 
-        }
+		try {
+				dt2 = sdf.parse(date.fromUnix(reference_time_seconds,tz));
+		} catch (Exception e) {
+			System.out.println(e.toString());
+			return false; 
+		}
 
 		Calendar calendar = Calendar.getInstance(tz);
 
@@ -500,8 +499,8 @@ public abstract class Agency {
 		} else if (sunday == 1 && dayOfWeek == calendar.SUNDAY) {
 			return true;
 		} 
-        
-        return false;
+		
+		return false;
 
 	}
 
@@ -525,25 +524,23 @@ public abstract class Agency {
 		String sql = "select exception_type from calendar_dates where service_id = ? and date = '" + date.fromUnix(reference_time_seconds,tz) + "'";	
 
 		PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, service_id);
+	
+		stmt.setString(1, service_id);
 
-        ResultSet results = stmt.executeQuery();
- 
-        if (!results.next()) {
-        	 // returned no records from results set so not special day 
-        	stmt.close();
-        	results.close();
-        	return 0;
-        } else {
-        	int exception_type =  results.getInt("exception_type"); /* return SERVICE_REMOVED which is pretty much guarantee service is not running today. likewise SERVICE_ADDED */
-        	stmt.close();
-        	results.close();
-        	return exception_type;
-	    } 
+		ResultSet results = stmt.executeQuery();
+	 
+		if (!results.next()) {
+			 // returned no records from results set so not special day 
+			stmt.close();
+			results.close();
+			return 0;
+		} else {
+			int exception_type =  results.getInt("exception_type"); /* return SERVICE_REMOVED which is pretty much guarantee service is not running today. likewise SERVICE_ADDED */
+			stmt.close();
+			results.close();
+			return exception_type;
+		} 
 	}
-
-
 
 
 	public String[] getServicesIdsFromShortName(String trip_short_name) throws SQLException {
@@ -556,21 +553,18 @@ public abstract class Agency {
 
 		String sql = "select service_id from trips where trip_short_name = ?";
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, trip_short_name);
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, trip_short_name);
 
-        ResultSet results = stmt.executeQuery();
+		ResultSet results = stmt.executeQuery();
 
-        while (results.next())  {
-        	service_list.add(results.getString("service_id"));
-        }
-        
-        stmt.close();
-        results.close();
+		while (results.next())  {
+			service_list.add(results.getString("service_id"));
+		}
+		
+		stmt.close();
+		results.close();
 
-		return (String[]) service_list.toArray(new String[service_list.size()]);
-	}
-
-
-
+			return (String[]) service_list.toArray(new String[service_list.size()]);
+		}
 }
