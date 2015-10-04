@@ -32,9 +32,7 @@ import java.util.ArrayList;
  */
 public class AgencyTest {
 
-
-    @Test
-    public void confirmBasicGTFSFunctions() {
+    private java.sql.Connection getConnection() {
 
         Properties prop  = null;
         try {
@@ -52,6 +50,14 @@ public class AgencyTest {
             System.out.println("unable to connect to database " + e.toString()); 
             org.junit.Assert.assertEquals("should connect to db", null , e.toString());
         }
+
+        return mysql.getConn();
+    }
+
+
+    @Test
+    public void confirmBasicGTFSFunctions() {
+
         
         AgencyInterface agency = new MBTAAgency();
         // nice to have: agency.isStopTimeActive(rail, stop, number, time, new Date());
@@ -59,7 +65,8 @@ public class AgencyTest {
         // agency.hasScheduleChanged(String short_trip_name, String stop, String date, new Date());
         // MBTA stores rail, stop, number time. we don't store a service id. 
         // MTA doesn't use a number on it's trains (I don't think)
-        agency.assignConnection(mysql.getConn());
+        agency.assignConnection(this.getConnection());
+
         String[] services;
 
         try {
@@ -207,13 +214,27 @@ public class AgencyTest {
             org.junit.Assert.assertEquals("shouldn't hit mysql error",true, false);
         }
 
-        
-
-
     }
 
     @Test
-    @Ignore
-    public void thisIsIgnored() {
+    public void testLinePaths() {   
+
+        MBTAAgency agency = new MBTAAgency();
+        
+        agency.assignConnection(this.getConnection());
+
+        try {
+            
+            org.junit.Assert.assertEquals("should get 2 paths", 2, agency.getUniquePathIds("CR-Fitchburg").length);           
+            double[][] paths = agency.getLinePaths("CR-Fitchburg");
+
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+            org.junit.Assert.assertEquals("shouldn't hit mysql error",true, false);
+        }
+
+
+
+
     }
 }

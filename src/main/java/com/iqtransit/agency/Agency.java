@@ -28,6 +28,11 @@ public abstract class Agency {
 	protected Connection conn; 
 	protected String id; 
 
+
+	public void assignConnection(Connection conn) {
+		this.conn = conn;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -205,9 +210,7 @@ public abstract class Agency {
 
 	public ArrayList<UpcomingTrain> getTripsFromStop(String stop_id, String [] current_service_ids) throws SQLException {
 
-		if (this.conn == null) {
-			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
-		}
+		this.checkConnection();
 
 		String sql = "select stop_times.stop_id, trips.trip_id, routes.route_id, route_long_name, arrival_time, service_id, trip_headsign, trip_short_name, trips.trip_id FROM trips, stop_times, routes WHERE trips.trip_id = stop_times.trip_id AND stop_times.stop_id = ? and routes.route_id = trips.route_id";
 
@@ -252,9 +255,7 @@ public abstract class Agency {
 
 	public String[] getServicesIdsRunningNow(int route_type, String route_id, long reference_time_seconds) throws SQLException {
 
-		if (this.conn == null) {
-			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
-		}
+		this.checkConnection();
 
 		String sql = "select distinct service_id as service_id from routes, trips where routes.route_type = " + route_type + " and routes.route_id = trips.route_id";
 
@@ -311,10 +312,7 @@ public abstract class Agency {
 
 		// this query is .15s
 		// select service_id, departure_time from routes, trips, stop_times, stop_locations where routes.route_type = 2 and routes.route_id = trips.route_id and trips.trip_id = stop_times.trip_id and stop_times.stop_id = stop_locations.stop_id and stop_locations.stop_id = 'Fitchburg';
-
-		if (this.conn == null) {
-			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
-		}
+		this.checkConnection();
 
 		/* simple way to increase performance of this method to index stop_id, location (lat, long), and route_id. now we can directly query index table instead of 4 tables. */
 
@@ -431,9 +429,7 @@ public abstract class Agency {
 
 	public boolean isServiceRunningNormallyNow(String service_id, long reference_time_seconds) throws SQLException {
 
-		if (this.conn == null) {
-			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
-		}
+		this.checkConnection();
 
 		GtfsDate date = new GtfsDate();
 
@@ -513,9 +509,7 @@ public abstract class Agency {
 		 final int SERVICE_REMOVED = 2;
 		 final int SERVICE_ADDED = 1;
 
-		if (this.conn == null) {
-			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
-		}
+		this.checkConnection();
 
 		TimeZone tz = this.getTimeZone();
 
@@ -545,9 +539,7 @@ public abstract class Agency {
 
 	public String[] getServicesIdsFromShortName(String trip_short_name) throws SQLException {
 		
-		if (this.conn == null) {
-			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
-		}
+		this.checkConnection();
 
 		ArrayList service_list = new ArrayList<String>();
 
@@ -565,6 +557,60 @@ public abstract class Agency {
 		stmt.close();
 		results.close();
 
-			return (String[]) service_list.toArray(new String[service_list.size()]);
+		return (String[]) service_list.toArray(new String[service_list.size()]);
+	}
+
+	/* this method assumes that route_id is a sensible way to lay out the paths. they are keyed off of trip_id in trips.txt, so this may not always be true. */
+
+
+	private void checkConnection() throws SQLException {
+		if (this.conn == null) {
+			throw new SQLException("connection missing from " + this.getId() + "Agency. be sure to call assignConnection()");
 		}
+	}
+
+
+	public String[] getUniquePathIds(String route_id) throws SQLException  {
+
+		/* very redundant code. can we get this DRYer? */
+
+		this.checkConnection();
+
+		ArrayList shape_id_list = new ArrayList<String>();
+
+		String sql = "select distinct shape_id from trips where route_id = ?";
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, route_id);
+
+		ResultSet results = stmt.executeQuery();
+
+		while (results.next())  {
+			shape_id_list.add(results.getString("shape_id"));
+		}
+		
+		stmt.close();
+		results.close();
+
+		return (String[]) shape_id_list.toArray(new String[shape_id_list.size()]);
+
+	}
+
+	public double[][] getLinePaths(String route_id) throws SQLException {
+		
+		double[][] results = {{}};  
+
+		String[] path_ids = this.getUniquePathIds(route_id);
+
+		for (int i = 0; i < path_ids.length; i++) {
+			
+
+
+		}
+
+		return results;
+
+	}
+
+
 }
