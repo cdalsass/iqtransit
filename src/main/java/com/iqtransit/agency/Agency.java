@@ -598,19 +598,110 @@ public abstract class Agency {
 
 	public double[][] getLinePaths(String route_id) throws SQLException {
 		
-		double[][] results = {{}};  
 
 		String[] path_ids = this.getUniquePathIds(route_id);
 
+		double[][] routes = new double[path_ids.length][]; 
+
 		for (int i = 0; i < path_ids.length; i++) {
 			
+			ArrayList<Double> lat_longs = new ArrayList<Double>();  
+			
+			String sql = "select shape_pt_lat, shape_pt_lon from shapes where shape_id =  ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			stmt.setString(1, path_ids[i]);
 
+			ResultSet results = stmt.executeQuery();
+
+			int j = 0;
+
+			while (results.next())  {
+				lat_longs.add(results.getDouble("shape_pt_lat"));
+				lat_longs.add(results.getDouble("shape_pt_lon"));
+			}
+		
+			stmt.close();
+			results.close();
+
+			Double[] object_double_array = (Double[]) lat_longs.toArray(new Double[lat_longs.size()]);
+			// ugh. convert double array to primitives. 
+			double[] primitive_double_array = new double[object_double_array.length];
+			for (int k = 0; k < object_double_array.length; k++) {
+				primitive_double_array[k] =  (double) object_double_array[k];
+			}
+
+			routes[i] = primitive_double_array;
 
 		}
 
-		return results;
+		return routes;
 
 	}
 
+	// Copied from from http://stackoverflow.com/a/2384847/1620112
+	private static boolean checkReversed(double[] x, double[] y)
+	{
+	    if (x.length != y.length)
+	    {
+	        return false;
+	    }
+	    // loop x forwards and y backwards
+	    for (int i = 0; i < x.length; i++)
+	    {
+	        if (Double.compare(x[i], y[y.length - 1 - i]) == 0)
+	        {
+	            // found mistake we exit
+	            return false;
+	        }
+	    }
+	    return true;
+	}
+	// End copied. 
+
+
+	public double[][] removeDuplicateShapes(double[][] original_shapes) {
+
+		boolean[] is_duplicate = new boolean[original_shapes.length];
+
+		// prefill array with false;
+		for (int i = 0; i < original_shapes.length; i++) {
+			is_duplicate[i] = false;
+		}
+
+		// determine what is a duplicate line path. Duplicates are reverse of original.
+		for (int i = 0; i < original_shapes.length; i++) {
+			for (int j = 0; j < original_shapes.length; j++) {
+				if (i != j) {
+					if (is_duplicate[i] == false && is_duplicate[j] == false && original_shapes[i].length == original_shapes[j].length /* don't look at yourself */) {
+						// this is a possibility that they may be duplicates. 
+						if (checkReversed(original_shapes[i], original_shapes[j]) == true) {
+							is_duplicate[j] = true; 
+						}
+					}
+				}
+			}
+		}
+
+		int total_to_return = 0;
+		// now return an array of primitives containing the deduped records. 
+		for (int i = 0; i < original_shapes.length; i++) {
+			if (is_duplicate[i] == false) {
+				total_to_return++;
+			}
+		}
+
+		double[][] results = new double[total_to_return][];
+
+		// this feels really inelegant...
+		for (int i = 0; i < original_shapes.length; i++) {
+			if (is_duplicate[i] == false) {
+				results[i] = original_shapes[i];
+			}
+		}
+
+		return results; 
+
+	}
 
 }

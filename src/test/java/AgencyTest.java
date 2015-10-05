@@ -227,13 +227,26 @@ public class AgencyTest {
             
             org.junit.Assert.assertEquals("should get 2 paths", 2, agency.getUniquePathIds("CR-Fitchburg").length);           
             double[][] paths = agency.getLinePaths("CR-Fitchburg");
+            org.junit.Assert.assertEquals("should get 2 paths", 2, paths.length);
+            org.junit.Assert.assertEquals("should get 2288 paths", 2288, paths[0].length);
+            org.junit.Assert.assertEquals("should get 2288 paths for second path", 2288, paths[1].length);
+            double[][] deduped_paths = agency.removeDuplicateShapes(paths);
+            org.junit.Assert.assertEquals("should get 1 paths", 1, deduped_paths.length);
+
+         
+            paths = agency.getLinePaths("CR-Haverhill");
+            org.junit.Assert.assertEquals("should get 2 paths", 4, paths.length);
+            org.junit.Assert.assertEquals("should get 1582 paths", 1582, paths[0].length);
+            org.junit.Assert.assertEquals("should get 1652 paths for second path", 1652, paths[1].length);
+            deduped_paths = agency.removeDuplicateShapes(paths);
+            org.junit.Assert.assertEquals("should get 2 paths", 2, deduped_paths.length);
+
+
 
         } catch (SQLException e) {
             System.out.println(e.toString());
             org.junit.Assert.assertEquals("shouldn't hit mysql error",true, false);
         }
-
-
 
 
     }
