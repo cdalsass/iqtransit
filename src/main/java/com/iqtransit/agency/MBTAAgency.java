@@ -207,7 +207,25 @@ public class MBTAAgency extends Agency implements AgencyInterface {
 
 	}
 
-	
+	/* intentionally left static data (without resorting to code-gen) so this method can be used in non-database environments like Android */
+
+	public String[] getRouteIds() {
+		String [] results = {
+			"CR-Fairmount",    
+			"CR-Fitchburg",    
+			"CR-Franklin",     
+			"CR-Greenbush",    
+			"CR-Haverhill",    
+			"CR-Kingston",     
+			"CR-Lowell",       
+			"CR-Middleborough",
+			"CR-Needham",      
+			"CR-Newburyport",  
+			"CR-Providence",   
+			"CR-Worcester"   
+		};
+		return results;
+	}
 
 	/* maybe this should be part of a separate class, since we are only doing this to improve performance on map. */
 	public double[] getReducedLinePath(String lineid) {

@@ -234,14 +234,13 @@ public class AgencyTest {
             org.junit.Assert.assertEquals("should get 1 paths", 1, deduped_paths.length);
 
          
-            paths = agency.getLinePaths("CR-Haverhill");
-            org.junit.Assert.assertEquals("should get 2 paths", 4, paths.length);
-            org.junit.Assert.assertEquals("should get 1582 paths", 1582, paths[0].length);
-            org.junit.Assert.assertEquals("should get 1652 paths for second path", 1652, paths[1].length);
+            paths = agency.getLinePaths("CR-Franklin");
+            org.junit.Assert.assertEquals("should get 4 paths", 4, paths.length);
+            org.junit.Assert.assertEquals("should get 1582 paths", 1588, paths[0].length);
+            org.junit.Assert.assertEquals("should get 1652 paths for second path", 1588, paths[1].length);
             deduped_paths = agency.removeDuplicateShapes(paths);
-            org.junit.Assert.assertEquals("should get 2 paths", 2, deduped_paths.length);
-
-
+            org.junit.Assert.assertEquals("should get 3 paths", 3, deduped_paths.length);
+            
 
         } catch (SQLException e) {
             System.out.println(e.toString());

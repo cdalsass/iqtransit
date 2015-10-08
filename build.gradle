@@ -29,3 +29,12 @@ task fatJar(type: Jar) {
 task showMeCache << {
   configurations.compile.each { println it }
 }
+
+task genSources << {
+     def proc = "rm -f src/main/java/com/iqtransit/gen/MBTAStaticPathData*; java -cp build/libs/iqtransit-all.jar com.iqtransit.codegen.staticShapesGenerator ./src/test/resources/config.properties".execute()
+    proc.in.eachLine {line -> println line}
+    proc.err.eachLine {line -> println 'ERROR: ' + line}
+    proc.waitFor() 
+}
+
+compileJava.dependsOn(genSources)

@@ -20,6 +20,8 @@ import java.util.Collections;
 import com.iqtransit.agency.UpcomingTrain;
 import com.iqtransit.gtfs.GtfsTime;
 import java.util.Arrays;
+import com.iqtransit.gen.*;
+
 /* contains many of the GTFS database-specific functions, which are likely to vary based on agency. */
 
 public abstract class Agency {
@@ -596,6 +598,13 @@ public abstract class Agency {
 
 	}
 
+	public double[][] getStaticLinePaths(String route_id)  {
+
+		return MBTAStaticPathData.getLines(route_id);
+		//return new double[0][0];
+
+	}
+
 	public double[][] getLinePaths(String route_id) throws SQLException {
 		
 
@@ -694,10 +703,13 @@ public abstract class Agency {
 		double[][] results = new double[total_to_return][];
 
 		// this feels really inelegant...
+		int results_index = 0;
 		for (int i = 0; i < original_shapes.length; i++) {
+			
 			if (is_duplicate[i] == false) {
-				results[i] = original_shapes[i];
+				results[results_index++] = original_shapes[i];
 			}
+
 		}
 
 		return results; 
