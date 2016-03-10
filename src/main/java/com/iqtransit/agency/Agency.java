@@ -20,7 +20,7 @@ import java.util.Collections;
 import com.iqtransit.agency.UpcomingTrain;
 import com.iqtransit.gtfs.GtfsTime;
 import java.util.Arrays;
-import com.iqtransit.gen.*;
+//import com.iqtransit.gen.*;
 
 /* contains many of the GTFS database-specific functions, which are likely to vary based on agency. */
 
@@ -600,8 +600,9 @@ public abstract class Agency {
 
 	public double[][] getStaticLinePaths(String route_id)  {
 
-		return MBTAStaticPathData.getLines(route_id);
+	//	return MBTAStaticPathData.getLines(route_id);
 		//return new double[0][0];
+		return new double[0][0];
 
 	}
 
