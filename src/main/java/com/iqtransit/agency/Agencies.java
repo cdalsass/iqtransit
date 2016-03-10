@@ -10,10 +10,9 @@ public class Agencies {
 
             String[] agencies_available = AgencyFactory.available();
                 
-            AgencyFactory af = new AgencyFactory();
 
             for (int i = 0; i < agencies_available.length; i++) {
-                AgencyInterface agency =  af.createAgency(agencies_available[i]);
+                AgencyInterface agency =  AgencyFactory.createAgency(agencies_available[i]);
                 
                 if (JTS.isPointInBoundary(lat, lon, agency.getBoundaries())) {
                     results.add(agency);

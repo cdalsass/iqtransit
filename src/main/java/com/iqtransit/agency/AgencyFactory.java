@@ -2,7 +2,7 @@ package com.iqtransit.agency;
 
 public  class AgencyFactory {
 
-        public AgencyInterface createAgency(String id) {
+        public static AgencyInterface createAgency(String id) {
 
                 switch (id) {
 

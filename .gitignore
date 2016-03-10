@@ -1,0 +1,6 @@
+cache.properties
+.gradle
+build
+jexxus-read-only
+lib
+*.class

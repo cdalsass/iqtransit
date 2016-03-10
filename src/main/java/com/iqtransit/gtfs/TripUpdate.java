@@ -24,7 +24,7 @@ import com.iqtransit.common.*;
   `created` datetime DEFAULT NULL,
   `external_id`  varchar(255) NOT NULL,
   `trip_id` varchar(255) NOT NULL,
-  `schedule_relationship` int(11) not null,
+  `schedule_relationship` int(11)  null,
    route_id varchar(255) not null,
    stop_id varchar(255) not null,
    stop_sequence int(11) not null,
@@ -90,7 +90,11 @@ public class TripUpdate extends RealtimeEntity {
             preparedStmt.setNull(2,Types.NULL);
         }
 
-        preparedStmt.setInt (3, this.schedule_relationship);
+        if (this.schedule_relationship != null) {
+            preparedStmt.setInt (3, this.schedule_relationship);
+        } else {
+            preparedStmt.setNull(3,Types.NULL);
+        }
        
         if (this.route_id != null) {
             preparedStmt.setString (4, this.route_id);
