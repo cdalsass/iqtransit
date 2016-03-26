@@ -54,6 +54,37 @@ public class AgencyTest {
         return mysql.getConn();
     }
 
+    @Test
+    public void confirmFurtherGTFSFunctions() {
+        
+        AgencyInterface agency = new MBTAAgency();
+
+        try {
+            
+            agency.assignConnection(this.getConnection());
+            String[] trip_ids = agency.getTripIdsFromServiceId("CR-Saturday-Fairmount-Nov14");
+            org.junit.Assert.assertEquals("should have 34 trip ids", 34,  trip_ids.length);
+
+            trip_ids = agency.getTripIdsFromServiceId(new String[] { "CR-Saturday-Fairmount-Nov14" });
+            org.junit.Assert.assertEquals("should have 34 trip ids", 34,  trip_ids.length);
+
+            org.junit.Assert.assertEquals("littleton should not be on fairmount line" , agency.isStopOnTrip("Littleton / Rte 495", "CR-Fairmount-CR-Saturday-Fairmount-Nov14-1754"), false);
+            org.junit.Assert.assertEquals("littleton should be on fitchburg line" , agency.isStopOnTrip("Littleton / Rte 495", "CR-Fitchburg-CR-Weekday-Fitchburg-Dec15-458"), true);
+
+            String[] destinations = agency.getDestinations("Littleton / Rte 495", new String[] { "CR-Weekday-Fitchburg-Dec15 " });
+            
+            for (int i = 0; i < destinations.length; i++) {
+                System.out.println("found destination " + destinations[i]);
+            }
+
+            org.junit.Assert.assertEquals("destinations > 1 ", 17, destinations.length);
+
+        } catch (Exception e) {
+            System.out.println("hit exception" + e.toString());
+            org.junit.Assert.assertEquals("should never hit exception", true, false);
+        }
+    }
+
 
     @Test
     public void confirmBasicGTFSFunctions() {

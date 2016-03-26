@@ -20,6 +20,7 @@ import java.util.Collections;
 import com.iqtransit.agency.UpcomingTrain;
 import com.iqtransit.gtfs.GtfsTime;
 import java.util.Arrays;
+import java.util.HashMap;
 //import com.iqtransit.gen.*;
 
 /* contains many of the GTFS database-specific functions, which are likely to vary based on agency. */
@@ -208,6 +209,119 @@ public abstract class Agency {
 			return stop_name;
 		}
 
+	}
+
+	public String[] getTripIdsFromServiceId(String[] service_ids) throws SQLException {
+		
+		List<String> trip_ids = new ArrayList<String>();
+
+		for (int i = 0; i < service_ids.length; i++ ) {
+			String[] trip_ids_for_service = this.getTripIdsFromServiceId(service_ids[i]);
+			for (int j = 0; j < trip_ids_for_service.length; j++ ) {
+				trip_ids.add(trip_ids_for_service[j]);
+			}
+
+		}
+		return (String[]) trip_ids.toArray(new String[trip_ids.size()]);
+
+	}
+
+	public String[] getTripIdsFromServiceId(String service_id) throws SQLException {
+
+		this.checkConnection();
+
+		String sql = "select distinct trip_id from trips where service_id = ?";
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, service_id);
+
+		ResultSet results = stmt.executeQuery();
+
+		List<String> trip_ids = new ArrayList<String>();
+
+		while (results.next())  {
+			
+			trip_ids.add(results.getString("trip_id"));
+			
+		}
+
+		stmt.close();
+		results.close();
+
+		return (String[]) trip_ids.toArray(new String[trip_ids.size()]);
+	}
+
+	public boolean isStopOnTrip (String boarding_stop_id, String trip_id) throws SQLException {
+		
+		this.checkConnection();
+		String sql = "select null from stop_times where trip_id = ? and stop_id = ?";
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, trip_id);
+		stmt.setString(2, boarding_stop_id);
+
+		ResultSet results = stmt.executeQuery();
+
+		boolean result = false;
+
+		while (results.next())  {
+			result = true; 
+			break;
+		}
+		
+		stmt.close();
+		results.close();
+		return result;
+	}
+
+	public String[] getStopIdsFromTripId(String trip_id) throws SQLException {
+
+		this.checkConnection();
+		String sql = "select stop_id from stop_times where trip_id = ?";
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, trip_id);
+
+		ResultSet results = stmt.executeQuery();
+
+		boolean result = false;
+
+		List<String> stop_ids = new ArrayList<String>();
+
+		while (results.next())  {
+			stop_ids.add(results.getString("stop_id"));
+		}
+
+		stmt.close();
+		results.close();
+
+		return (String[]) stop_ids.toArray(new String[stop_ids.size()]);
+
+	}
+
+
+	/* find out all possible destinations from given boarding stop. This can include intermediate stops - doesn't have to be terminal for trip. */
+
+	public String[] getDestinations(String boarding_stop_id, String[] current_service_ids) throws SQLException {
+
+		String [] trip_ids = this.getTripIdsFromServiceId(current_service_ids);
+
+		HashMap<String, Boolean> destinations = new HashMap<String, Boolean>();
+
+		for (int i = 0; i < trip_ids.length; i++ ) {
+			// does trip include boarding stop? 
+			if (this.isStopOnTrip(boarding_stop_id, trip_ids[i]) == true) {
+
+				String[] stop_ids = this.getStopIdsFromTripId(trip_ids[i]);
+				for (int j = 0; j < stop_ids.length; j++ ) {
+					if (stop_ids[j].equals(boarding_stop_id) == false)
+					destinations.put(stop_ids[j], true);
+				}
+			}
+		}
+
+		return  destinations.keySet().toArray(new String[destinations.size()]);
+		//return keyArray;
 	}
 
 	public ArrayList<UpcomingTrain> getTripsFromStop(String stop_id, String [] current_service_ids) throws SQLException {

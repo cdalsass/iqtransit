@@ -36,4 +36,8 @@ public interface AgencyInterface {
 	public String getTerminalStopId(String trip_id)  throws SQLException;
 	public String getStartStopName(String trip_id)  throws SQLException ;
 	public String getStartStopId(String trip_id)  throws SQLException;
+	public String[] getTripIdsFromServiceId(String trip_id)  throws SQLException;
+	public String[] getTripIdsFromServiceId(String[] trip_id)  throws SQLException;
+	public boolean isStopOnTrip (String boarding_stop_id, String trip_id) throws SQLException;
+	public String[] getDestinations(String boarding_stop_id, String [] current_service_ids) throws SQLException;
 }
